@@ -31,7 +31,7 @@ async def chatgpt() -> None:
     result = await structured_llm.ainvoke(message=SYSTEM_PROMPT)
     print(result)
     print(structured_llm.usage)
-    print(structured_llm.counter.pricing.usd_rate)
+    print(structured_llm.counter.model_registry.usd_rate)
 
 
 async def gigachat() -> None:
@@ -40,7 +40,7 @@ async def gigachat() -> None:
     result = await structured_llm.ainvoke(message=SYSTEM_PROMPT)
     print(result)
     print(structured_llm.usage)
-    print(structured_llm.counter.pricing.usd_rate)
+    print(structured_llm.counter.model_registry.usd_rate)
 
 
 async def claude() -> None:
@@ -49,7 +49,7 @@ async def claude() -> None:
     result = await structured_llm.ainvoke(message=SYSTEM_PROMPT)
     print(result)
     print(structured_llm.usage)
-    print(structured_llm.counter.pricing.usd_rate)
+    print(structured_llm.counter.model_registry.usd_rate)
 
 
 async def main() -> None:

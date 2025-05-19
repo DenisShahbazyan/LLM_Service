@@ -3,7 +3,6 @@ from typing import Any
 
 from pydantic import BaseModel
 
-
 CHAT_GPT__KEY = os.getenv('CHAT_GPT__KEY')
 GIGACHAT__KEY = os.getenv('GIGACHAT__KEY')
 ANTHROPIC__KEY = os.getenv('ANTHROPIC__KEY')

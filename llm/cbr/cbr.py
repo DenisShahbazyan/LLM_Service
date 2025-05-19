@@ -4,7 +4,7 @@ from typing import Optional, Self
 from xml.etree import ElementTree
 
 import aiohttp
-from aiohttp import ClientTimeout, ClientResponse
+from aiohttp import ClientResponse, ClientTimeout
 
 
 class CBRRate:

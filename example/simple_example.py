@@ -9,7 +9,7 @@ async def chatgpt() -> None:
     result = await llm.ainvoke(message='Сколько будет 2 + 2?')
     print(result)
     print(llm.usage)
-    print(llm.counter.pricing.usd_rate)
+    print(llm.counter.model_registry.usd_rate)
 
 
 async def gigachat() -> None:
@@ -17,7 +17,7 @@ async def gigachat() -> None:
     result = await llm.ainvoke(message='Сколько будет 2 + 2?')
     print(result)
     print(llm.usage)
-    print(llm.counter.pricing.usd_rate)
+    print(llm.counter.model_registry.usd_rate)
 
 
 async def claude() -> None:
@@ -25,7 +25,7 @@ async def claude() -> None:
     result = await llm.ainvoke(message='Сколько будет 2 + 2?')
     print(result)
     print(llm.usage)
-    print(llm.counter.pricing.usd_rate)
+    print(llm.counter.model_registry.usd_rate)
 
 
 async def main() -> None:

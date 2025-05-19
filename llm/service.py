@@ -7,9 +7,8 @@ from langchain.schema import BaseMessage
 from llm.billing import BillingDecorator
 from llm.cbr.cbr import CBRRate
 from llm.counter import TokenCounter
-from llm.factory import LLMFactory
+from llm.model_registry import ModelRegistry
 from llm.prepare_chat import PrepareChat
-from llm.pricing import TokenPricing
 from llm.usage import TokenUsage
 
 
@@ -18,49 +17,53 @@ class LLMService:
     Класс для работы с LLM.
 
     После инициализации
-        `llm_service = LLMService(get_llm_config('gpt-4o-mini'))`
+        `llm = await LLMService.create(get_llm_config('gpt-4o-mini'))`
 
     будут доступны такие поля:
-        `llm_service.usage.all_input_tokens` - общее количество отправленных токенов
+        `llm.usage.all_input_tokens` - общее количество отправленных токенов
             с момента инициализации
-        `llm_service.usage.all_output_tokens`  - общее количество полученных токенов
+        `llm.usage.all_output_tokens`  - общее количество полученных токенов
             с момента инициализации
-        `llm_service.usage.last_input_tokens` - количество отправленных токенов
+        `llm.usage.last_input_tokens` - количество отправленных токенов
             за последний вызов
-        `llm_service.usage.last_output_tokens` - количество полученных токенов
+        `llm.usage.last_output_tokens` - количество полученных токенов
+            за последний вызов
+
+        ---
+
+        `llm.usage.all_input_spendings` - общие расходы в USD при отправке
+            с момента инициализации
+        `llm.usage.all_output_spendings` - общие расходы в USD при получении
+            с момента инициализации
+        `llm.usage.last_input_spendings` - расходы в USD при отправке
+            за последний вызов
+        `llm.usage.last_output_spendings` - расходы в USD при получении
             за последний вызов
 
         ---
 
-        `llm_service.usage.all_input_spendings` - общие расходы в USD при отправке
-            с момента инициализации
-        `llm_service.usage.all_output_spendings` - общие расходы в USD при получении
-            с момента инициализации
-        `llm_service.usage.last_input_spendings` - расходы в USD при отправке
-            за последний вызов
-        `llm_service.usage.last_output_spendings` - расходы в USD при получении
-            за последний вызов
-
-        ---
-        `llm_service.counter.pricing.usd_rate` - курс валюты в USD, курс будет получен
-            только после первого обращения к LLM, так как подгружается лениво
+        `llm.counter.model_registry.usd_rate` - курс валюты в USD.
     """
 
     def __init__(self, config: dict, usd_rate: float = None) -> None:
         self.config = config
-        self.client = LLMFactory.init_client(config)
+        self.model_registry = ModelRegistry(usd_rate)
+
+        self.client = self.model_registry.init_client(config)
         self.usage = TokenUsage()
         self._is_structured_output = False
 
         # Инициализируем pricing с предоставленным курсом доллара
-        pricing = TokenPricing(usd_rate)
-        self.counter = TokenCounter(self.client, self.usage, pricing)
+        self.counter = TokenCounter(
+            model_name=config.get('model'),
+            usage=self.usage,
+            model_registry=self.model_registry,
+        )
 
         self.__ainvoke = partial(BillingDecorator(self.__ainvoke, self.counter))
 
     @classmethod
     async def create(cls, config: dict) -> Self:
-        """Асинхронный фабричный метод для создания LLMService с загруженным курсом доллара"""
         # Получаем курс доллара
         cbr = CBRRate()
         usd_rate = await cbr.get_usd_rate()

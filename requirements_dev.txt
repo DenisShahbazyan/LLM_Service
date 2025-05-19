@@ -1,0 +1,4 @@
+pre_commit==4.2.0
+Flake8-pyproject==1.2.3
+build==1.2.2.post1
+twine==6.1.0

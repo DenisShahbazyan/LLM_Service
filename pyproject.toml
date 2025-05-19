@@ -1,0 +1,55 @@
+##########################################
+#                PreCommit               #
+##########################################
+[tool.autoflake]
+in-place = true
+remove-all-unused-imports = true
+ignore-init-module-imports = true
+
+[tool.isort]
+profile = "black"
+skip_glob = ["__pycache__/*", "venv/*"]
+
+[tool.black]
+line-length = 88
+skip-string-normalization = true
+
+[tool.flake8]
+max-line-length = 88
+ignore = ["F821", "W503", "E701", "E226"]
+exclude = ["__pycache__/*", "venv/*"]
+
+[tool.ruff]
+exclude = ["__pycache__/*", "venv/*"]
+lint.select = ["E", "W", "F", "C", "N"]
+lint.ignore = ["F821"]
+line-length = 88
+
+
+##########################################
+#                 Package                #
+##########################################
+[build-system]
+requires = ["setuptools>=80", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "universal-llm-service"
+version = "0.1.0"
+authors = [{ name = "Денис Шахбазян", email = "otbephncb@gmail.com" }]
+description = "Библиотека для работы с языковыми моделями"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dynamic = ["dependencies"]
+
+[project.urls]
+"Homepage" = "https://github.com/DenisShahbazyan/LLM_Service"
+"Bug Tracker" = "https://github.com/DenisShahbazyan/LLM_Service/issues"
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements.txt"] }

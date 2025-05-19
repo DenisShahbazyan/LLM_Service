@@ -1,9 +1,10 @@
 import json
 from typing import Any, Awaitable, Callable, TypeVar
 
-from pydantic import BaseModel
-from llm.counter import TokenCounter
 from langchain.schema import AIMessage
+from pydantic import BaseModel
+
+from llm.counter import TokenCounter
 from llm.pydantic.checker import is_pydantic_instance
 
 PydanticSchema = TypeVar('PydanticSchema', bound=BaseModel)

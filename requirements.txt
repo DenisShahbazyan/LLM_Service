@@ -1,0 +1,6 @@
+aiohttp==3.11.18
+langchain==0.3.25
+langchain-openai==0.3.17
+langchain-gigachat==0.3.10
+langchain-anthropic==0.3.13
+tiktoken==0.9.0
