@@ -1,3 +1,10 @@
+# LLM Service
+
+[![PyPI version](https://img.shields.io/pypi/v/universal-llm-service.svg)](https://pypi.org/project/universal-llm-service/)
+[![Build Status](https://github.com/DenisShahbazyan/LLM_Service/actions/workflows/publish.yml/badge.svg)](https://github.com/DenisShahbazyan/LLM_Service/actions)
+[![Python Versions](https://img.shields.io/pypi/pyversions/universal-llm-service.svg)](https://pypi.org/project/universal-llm-service/)
+[![License](https://img.shields.io/pypi/l/universal-llm-service.svg)](https://github.com/DenisShahbazyan/LLM_Service/blob/master/LICENSE)
+
 # Библиотека для упрощенного использования LLM
 
 Библиотека предоставляет упрощенный интерфейс для работы с различными LLM моделями, автоматический подсчет токенов и стоимости запросов, а также удобную интеграцию с существующими проектами. Создана на основе Langchain, являясь практичной оберткой для стандартизации взаимодействия с моделями.
@@ -11,7 +18,7 @@
 
 ## Установка:
 ```sh
-pip install git+https://github.com/DenisShahbazyan/LLM_Service.git
+pip install universal-llm-service
 ```
 
 ## Использование:
