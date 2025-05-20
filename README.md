@@ -115,6 +115,8 @@ if __name__ == '__main__':
 pip install -r requirements.txt
 ```
 
+Создать файл `.env` на основе шаблона `.env.template` и вписать ключи
+
 Запуск примеров:
 ```sh
 python -m example.simple_example  # Пример обычного общения с LLM
