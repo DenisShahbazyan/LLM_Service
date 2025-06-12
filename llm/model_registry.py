@@ -23,7 +23,13 @@ class ModelConfig:
 
 
 class ModelRegistry:
-    """Реестр моделей"""
+    """Реестр моделей
+
+    - Цены OpenAI: https://platform.openai.com/docs/pricing
+    - Цены Gigachat: https://developers.sber.ru/docs/ru/gigachat/tariffs/legal-tariffs
+    - Цены Anthropic: https://docs.anthropic.com/en/docs/about-claude/pricing
+        - имена моделей https://docs.anthropic.com/en/docs/about-claude/models/overview#model-names
+    """  # noqa: E501
 
     def __init__(self, usd_rate: float) -> None:
         self.usd_rate = usd_rate
@@ -32,20 +38,56 @@ class ModelRegistry:
 
     def _init_models(self) -> dict[str, ModelConfig]:
         return {
+            # OpenAI
             'gpt-4o-mini': ModelConfig(
                 client_class=ChatOpenAI,
                 token_counter=self._count_tokens_openai,
                 pricing={
-                    TokenDirection.ENCODE: 0.15 / 1e6,
-                    TokenDirection.DECODE: 0.6 / 1e6,
+                    TokenDirection.ENCODE: 0.15 / 1_000_000,
+                    TokenDirection.DECODE: 0.6 / 1_000_000,
                 },
             ),
             'gpt-4o': ModelConfig(
                 client_class=ChatOpenAI,
                 token_counter=self._count_tokens_openai,
                 pricing={
-                    TokenDirection.ENCODE: 2.5 / 1e6,
-                    TokenDirection.DECODE: 10.0 / 1e6,
+                    TokenDirection.ENCODE: 2.5 / 1_000_000,
+                    TokenDirection.DECODE: 10.0 / 1_000_000,
+                },
+            ),
+            'o3-2025-04-16': ModelConfig(
+                client_class=ChatOpenAI,
+                token_counter=self._count_tokens_openai,
+                pricing={
+                    TokenDirection.ENCODE: 2.0 / 1_000_000,
+                    TokenDirection.DECODE: 8.0 / 1_000_000,
+                },
+            ),
+            'o4-mini-2025-04-16': ModelConfig(
+                client_class=ChatOpenAI,
+                token_counter=self._count_tokens_openai,
+                pricing={
+                    TokenDirection.ENCODE: 1.10 / 1_000_000,
+                    TokenDirection.DECODE: 4.40 / 1_000_000,
+                },
+            ),
+            # Gigachat
+            'GigaChat': ModelConfig(
+                client_class=GigaChat,
+                token_counter=self._create_gigachat_counter(),
+                pricing={
+                    # 5_000 рублей / 25_000_000 токенов / курс доллара
+                    TokenDirection.ENCODE: 5_000 / 25_000_000 / self.usd_rate,
+                    TokenDirection.DECODE: 5_000 / 25_000_000 / self.usd_rate,
+                },
+            ),
+            'GigaChat-2': ModelConfig(
+                client_class=GigaChat,
+                token_counter=self._create_gigachat_counter(),
+                pricing={
+                    # 5_000 рублей / 25_000_000 токенов / курс доллара
+                    TokenDirection.ENCODE: 5_000 / 25_000_000 / self.usd_rate,
+                    TokenDirection.DECODE: 5_000 / 25_000_000 / self.usd_rate,
                 },
             ),
             'GigaChat-Pro': ModelConfig(
@@ -57,6 +99,24 @@ class ModelRegistry:
                     TokenDirection.DECODE: 10_500 / 7_000_000 / self.usd_rate,
                 },
             ),
+            'GigaChat-2-Pro': ModelConfig(
+                client_class=GigaChat,
+                token_counter=self._create_gigachat_counter(),
+                pricing={
+                    # 10_500 рублей / 7_000_000 токенов / курс доллара
+                    TokenDirection.ENCODE: 10_500 / 7_000_000 / self.usd_rate,
+                    TokenDirection.DECODE: 10_500 / 7_000_000 / self.usd_rate,
+                },
+            ),
+            'GigaChat-Max': ModelConfig(
+                client_class=GigaChat,
+                token_counter=self._create_gigachat_counter(),
+                pricing={
+                    # 15_600 рублей / 8_000_000 токенов / курс доллара
+                    TokenDirection.ENCODE: 15_600 / 8_000_000 / self.usd_rate,
+                    TokenDirection.DECODE: 15_600 / 8_000_000 / self.usd_rate,
+                },
+            ),
             'GigaChat-2-Max': ModelConfig(
                 client_class=GigaChat,
                 token_counter=self._create_gigachat_counter(),
@@ -66,12 +126,29 @@ class ModelRegistry:
                     TokenDirection.DECODE: 15_600 / 8_000_000 / self.usd_rate,
                 },
             ),
+            # Anthropic
             'claude-3-5-haiku-latest': ModelConfig(
                 client_class=ChatAnthropic,
                 token_counter=self._create_anthropic_counter(),
                 pricing={
-                    TokenDirection.ENCODE: 0.25 / 1e6,
-                    TokenDirection.DECODE: 1.25 / 1e6,
+                    TokenDirection.ENCODE: 0.8 / 1_000_000,
+                    TokenDirection.DECODE: 4.0 / 1_000_000,
+                },
+            ),
+            'claude-3-7-sonnet-latest': ModelConfig(
+                client_class=ChatAnthropic,
+                token_counter=self._create_anthropic_counter(),
+                pricing={
+                    TokenDirection.ENCODE: 3.0 / 1_000_000,
+                    TokenDirection.DECODE: 15.0 / 1_000_000,
+                },
+            ),
+            'claude-opus-4-20250514': ModelConfig(
+                client_class=ChatAnthropic,
+                token_counter=self._create_anthropic_counter(),
+                pricing={
+                    TokenDirection.ENCODE: 15.0 / 1_000_000,
+                    TokenDirection.DECODE: 75.0 / 1_000_000,
                 },
             ),
         }

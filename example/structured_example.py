@@ -2,7 +2,19 @@ import asyncio
 
 from pydantic import BaseModel, Field
 
-from example.llm_config import get_llm_config
+from example.llm_config import claude_3_5_haiku  # noqa: F401
+from example.llm_config import claude_3_7_sonnet  # noqa: F401
+from example.llm_config import claude_opus_4  # noqa: F401
+from example.llm_config import giga_chat  # noqa: F401
+from example.llm_config import giga_chat_2  # noqa: F401
+from example.llm_config import giga_chat_2_max  # noqa: F401
+from example.llm_config import giga_chat_2_pro  # noqa: F401
+from example.llm_config import giga_chat_max  # noqa: F401
+from example.llm_config import giga_chat_pro  # noqa: F401
+from example.llm_config import gpt_4o  # noqa: F401
+from example.llm_config import gpt_4o_mini  # noqa: F401
+from example.llm_config import o3_2025_04_16  # noqa: F401
+from example.llm_config import o4_mini_2025_04_16  # noqa: F401
 from llm.service import LLMService
 
 
@@ -26,7 +38,7 @@ SYSTEM_PROMPT = (
 
 
 async def chatgpt() -> None:
-    llm = await LLMService.create(get_llm_config('gpt-4o-mini'))
+    llm = await LLMService.create(gpt_4o_mini.to_dict())
     structured_llm = await llm.with_structured_output(RelatedConceptListOutput)
     result = await structured_llm.ainvoke(message=SYSTEM_PROMPT)
     print(result)
@@ -35,7 +47,7 @@ async def chatgpt() -> None:
 
 
 async def gigachat() -> None:
-    llm = await LLMService.create(get_llm_config('GigaChat-2-Max'))
+    llm = await LLMService.create(giga_chat_2_max.to_dict())
     structured_llm = await llm.with_structured_output(RelatedConceptListOutput)
     result = await structured_llm.ainvoke(message=SYSTEM_PROMPT)
     print(result)
@@ -44,7 +56,7 @@ async def gigachat() -> None:
 
 
 async def claude() -> None:
-    llm = await LLMService.create(get_llm_config('claude-3-5-haiku-latest'))
+    llm = await LLMService.create(claude_3_5_haiku.to_dict())
     structured_llm = await llm.with_structured_output(RelatedConceptListOutput)
     result = await structured_llm.ainvoke(message=SYSTEM_PROMPT)
     print(result)

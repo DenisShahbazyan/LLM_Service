@@ -1,58 +1,91 @@
 import os
-from typing import Any
 
-from pydantic import BaseModel
+from llm.constructor import BaseLLM
 
 CHAT_GPT__KEY = os.getenv('CHAT_GPT__KEY')
 GIGACHAT__KEY = os.getenv('GIGACHAT__KEY')
 ANTHROPIC__KEY = os.getenv('ANTHROPIC__KEY')
 
 
-class GPT4ominiConfig(BaseModel):
-    model: str = 'gpt-4o-mini'
-    api_key: str = CHAT_GPT__KEY
+gpt_4o_mini = BaseLLM(
+    model='gpt-4o-mini',
+    api_key=CHAT_GPT__KEY,
+)
 
+gpt_4o = BaseLLM(
+    model='gpt-4o',
+    api_key=CHAT_GPT__KEY,
+)
 
-class GigaChat2MaxConfig(BaseModel):
-    model: str = 'GigaChat-2-Max'
-    credentials: str = GIGACHAT__KEY
-    scope: str = 'GIGACHAT_API_CORP'
-    verify_ssl_certs: bool = False
-    profanity_check: bool = False
+o3_2025_04_16 = BaseLLM(
+    model='o3-2025-04-16',
+    api_key=CHAT_GPT__KEY,
+)
 
+o4_mini_2025_04_16 = BaseLLM(
+    model='o4-mini-2025-04-16',
+    api_key=CHAT_GPT__KEY,
+)
 
-class Claude35HaikuConfig(BaseModel):
-    model: str = 'claude-3-5-haiku-latest'
-    api_key: str = ANTHROPIC__KEY
+giga_chat = BaseLLM(
+    model='GigaChat',
+    credentials=GIGACHAT__KEY,
+    scope='GIGACHAT_API_CORP',
+    verify_ssl_certs=False,
+    profanity_check=False,
+)
 
+giga_chat_2 = BaseLLM(
+    model='GigaChat-2',
+    credentials=GIGACHAT__KEY,
+    scope='GIGACHAT_API_CORP',
+    verify_ssl_certs=False,
+    profanity_check=False,
+)
 
-class LLMConfig:
-    gpt_4o_mini: dict[str, Any] = GPT4ominiConfig().model_dump()
-    gigachat_2_max: dict[str, Any] = GigaChat2MaxConfig().model_dump()
-    claude_3_5_haiku: dict[str, Any] = Claude35HaikuConfig().model_dump()
+giga_chat_pro = BaseLLM(
+    model='GigaChat-Pro',
+    credentials=GIGACHAT__KEY,
+    scope='GIGACHAT_API_CORP',
+    verify_ssl_certs=False,
+    profanity_check=False,
+)
 
+giga_chat_2_pro = BaseLLM(
+    model='GigaChat-2-Pro',
+    credentials=GIGACHAT__KEY,
+    scope='GIGACHAT_API_CORP',
+    verify_ssl_certs=False,
+    profanity_check=False,
+)
 
-llm_config = LLMConfig()
+giga_chat_max = BaseLLM(
+    model='GigaChat-Max',
+    credentials=GIGACHAT__KEY,
+    scope='GIGACHAT_API_CORP',
+    verify_ssl_certs=False,
+    profanity_check=False,
+)
 
+giga_chat_2_max = BaseLLM(
+    model='GigaChat-2-Max',
+    credentials=GIGACHAT__KEY,
+    scope='GIGACHAT_API_CORP',
+    verify_ssl_certs=False,
+    profanity_check=False,
+)
 
-def get_llm_config(llm_code: str) -> dict[str, Any]:
-    """Отдает конфиг LLM по его коду. Код - который используется для токенизаторов.
+claude_3_5_haiku = BaseLLM(
+    model='claude-3-5-haiku-latest',
+    api_key=ANTHROPIC__KEY,
+)
 
-    Args:
-        llm_code (str): Код LLM
+claude_3_7_sonnet = BaseLLM(
+    model='claude-3-7-sonnet-latest',
+    api_key=ANTHROPIC__KEY,
+)
 
-    Raises:
-        ValueError: Если код LLM неизвестен
-
-    Returns:
-        dict[str, Any]: Конфиг LLM в виде dict
-    """
-    match llm_code:
-        case 'gpt-4o-mini':
-            return llm_config.gpt_4o_mini
-        case 'GigaChat-2-Max':
-            return llm_config.gigachat_2_max
-        case 'claude-3-5-haiku-latest':
-            return llm_config.claude_3_5_haiku
-        case _:
-            raise ValueError(f'Unknown LLM code: {llm_code}')
+claude_opus_4 = BaseLLM(
+    model='claude-opus-4-20250514',
+    api_key=ANTHROPIC__KEY,
+)
