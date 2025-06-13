@@ -1,21 +1,26 @@
 from dataclasses import dataclass
 from typing import Any, Callable, Type
 
+import aiohttp
 import tiktoken
 from langchain.schema import BaseMessage
 from langchain_anthropic import ChatAnthropic
 from langchain_gigachat import GigaChat
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_openai import ChatOpenAI
+from langchain_xai import ChatXAI
 
 from llm.direction import TokenDirection
 
-LLMClientInstance = ChatOpenAI | GigaChat | ChatAnthropic | ChatGoogleGenerativeAI
+LLMClientInstance = (
+    ChatOpenAI | GigaChat | ChatAnthropic | ChatGoogleGenerativeAI | ChatXAI
+)
 LLMClientClass = (
     Type[ChatOpenAI]
     | Type[GigaChat]
     | Type[ChatAnthropic]
     | Type[ChatGoogleGenerativeAI]
+    | Type[ChatXAI]
 )
 
 
@@ -36,6 +41,7 @@ class ModelRegistry:
     - Цены Anthropic: https://docs.anthropic.com/en/docs/about-claude/pricing
         - имена моделей https://docs.anthropic.com/en/docs/about-claude/models/overview#model-names
     - Цены Google: https://ai.google.dev/gemini-api/docs/pricing#gemini-2.5-pro-preview
+    - Цены XAI: https://docs.x.ai/docs/models
     """  # noqa: E501
 
     def __init__(self, usd_rate: float) -> None:
@@ -175,6 +181,15 @@ class ModelRegistry:
                     TokenDirection.DECODE: 15.0 / 1_000_000,
                 },
             ),
+            # Groq
+            'grok-3-mini': ModelConfig(
+                client_class=ChatXAI,
+                token_counter=self._create_xai_counter(),
+                pricing={
+                    TokenDirection.ENCODE: 0.3 / 1_000_000,
+                    TokenDirection.DECODE: 0.5 / 1_000_000,
+                },
+            ),
         }
 
     async def get_tokens(self, model_name: str, messages: list[BaseMessage]) -> int:
@@ -267,5 +282,34 @@ class ModelRegistry:
                 raise ValueError('Client not initialized')
 
             return self.client.get_num_tokens_from_messages(messages)
+
+        return count_tokens
+
+    def _create_xai_counter(self):
+        """Создает функцию счетчика токенов для xAI"""
+
+        async def count_tokens(messages: list[BaseMessage], model_name: str) -> int:
+            if not self.client:
+                raise ValueError('Client not initialized')
+
+            x_api_key = self.client.xai_api_key._secret_value
+
+            url = 'https://api.x.ai/v1/tokenize-text'
+
+            headers = {
+                'Authorization': f"Bearer {x_api_key}",
+                'Content-Type': 'application/json',
+            }
+
+            text = ' '.join(str(m.content) for m in messages)
+            payload = {
+                'text': text,
+                'model': model_name,
+            }
+
+            async with aiohttp.ClientSession() as session:
+                async with session.post(url, headers=headers, json=payload) as response:
+                    data = await response.json()
+                    return len(data['token_ids'])
 
         return count_tokens

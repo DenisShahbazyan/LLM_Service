@@ -6,6 +6,7 @@ CHAT_GPT__KEY = os.getenv('CHAT_GPT__KEY')
 GIGACHAT__KEY = os.getenv('GIGACHAT__KEY')
 ANTHROPIC__KEY = os.getenv('ANTHROPIC__KEY')
 GEMINI_KEY = os.getenv('GEMINI_KEY')
+XAI_KEY = os.getenv('XAI_KEY')
 
 
 gpt_4o_mini = BaseLLM(
@@ -96,7 +97,12 @@ gemini_2_0_flash_001 = BaseLLM(
     api_key=GEMINI_KEY,
 )
 
-google_gemini_2_5_pro = BaseLLM(
+gemini_2_5_pro = BaseLLM(
     model='gemini-2.5-pro-preview-06-05',
     api_key=GEMINI_KEY,
+)
+
+grok_3_mini = BaseLLM(
+    model='grok-3-mini',
+    api_key=XAI_KEY,
 )

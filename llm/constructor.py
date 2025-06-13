@@ -1,9 +1,11 @@
 from typing import Any
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class BaseLLM(BaseModel):
+    model_config = ConfigDict(extra='allow')
+
     model: str
     api_key: str | None = None
     credentials: str | None = None

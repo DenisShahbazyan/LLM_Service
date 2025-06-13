@@ -28,11 +28,11 @@ pip install universal-llm-service
 import asyncio
 from llm import LLMService
 
-from llm_config import get_llm_config
+from llm_config import gpt_4o_mini
 
 
 async def main():
-    llm = await LLMService.create(get_llm_config('gpt-4o-mini'))
+    llm = await LLMService.create(gpt_4o_mini.to_dict())
     result = await llm.ainvoke(message='Сколько будет 2 + 2?')
 
 
@@ -47,7 +47,7 @@ import asyncio
 
 from pydantic import BaseModel, Field
 
-from llm_config import get_llm_config
+from llm_config import gpt_4o_mini
 from llm import LLMService
 
 
@@ -71,7 +71,7 @@ SYSTEM_PROMPT = (
 
 
 async def main() -> None:
-    llm = await LLMService.create(get_llm_config('gpt-4o-mini'))
+    llm = await LLMService.create(gpt_4o_mini.to_dict())
     structured_llm = await llm.with_structured_output(RelatedConceptListOutput)
     result = await structured_llm.ainvoke(message=SYSTEM_PROMPT)
 
@@ -119,8 +119,8 @@ pip install -r requirements.txt
 
 Запуск примеров:
 ```sh
-python -m example.simple_example  # Пример обычного общения с LLM
-python -m example.structured_example  # Пример общения с LLM со структурированным выводом
+python -m example.simple  # Пример обычного общения с LLM
+python -m example.structured  # Пример общения с LLM со структурированным выводом
 ```
 
 ## TODO:
@@ -128,3 +128,19 @@ python -m example.structured_example  # Пример общения с LLM со 
 - Добавить подсчет токенов для стримминговой передачи
 
 # Список поддерживаемых моделей:
+- `gpt-4o-mini`
+- `gpt-4o`
+- `o3-2025-04-16`
+- `o4-mini-2025-04-16`
+- `GigaChat`
+- `GigaChat-2`
+- `GigaChat-Pro`
+- `GigaChat-2-Pro`
+- `GigaChat-Max`
+- `GigaChat-2-Max`
+- `claude-3-5-haiku-latest`
+- `claude-3-7-sonnet-latest`
+- `claude-opus-4-20250514`
+- `gemini-2.0-flash-001`
+- `gemini-2.5-pro-preview-06-05`
+- `grok-3-mini`
