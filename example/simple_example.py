@@ -51,10 +51,10 @@ async def gemini() -> None:
 
 
 async def main() -> None:
-    # await chatgpt()
+    await chatgpt()
     # await gigachat()
     # await claude()
-    await gemini()
+    # await gemini()
 
 
 if __name__ == '__main__':

@@ -35,6 +35,7 @@ class ModelRegistry:
     - Цены Gigachat: https://developers.sber.ru/docs/ru/gigachat/tariffs/legal-tariffs
     - Цены Anthropic: https://docs.anthropic.com/en/docs/about-claude/pricing
         - имена моделей https://docs.anthropic.com/en/docs/about-claude/models/overview#model-names
+    - Цены Google: https://ai.google.dev/gemini-api/docs/pricing#gemini-2.5-pro-preview
     """  # noqa: E501
 
     def __init__(self, usd_rate: float) -> None:
