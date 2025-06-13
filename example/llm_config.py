@@ -5,6 +5,7 @@ from llm.constructor import BaseLLM
 CHAT_GPT__KEY = os.getenv('CHAT_GPT__KEY')
 GIGACHAT__KEY = os.getenv('GIGACHAT__KEY')
 ANTHROPIC__KEY = os.getenv('ANTHROPIC__KEY')
+GEMINI_KEY = os.getenv('GEMINI_KEY')
 
 
 gpt_4o_mini = BaseLLM(
@@ -88,4 +89,14 @@ claude_3_7_sonnet = BaseLLM(
 claude_opus_4 = BaseLLM(
     model='claude-opus-4-20250514',
     api_key=ANTHROPIC__KEY,
+)
+
+gemini_2_0_flash_001 = BaseLLM(
+    model='gemini-2.0-flash-001',
+    api_key=GEMINI_KEY,
+)
+
+google_gemini_2_5_pro = BaseLLM(
+    model='gemini-2.5-pro-preview-06-05',
+    api_key=GEMINI_KEY,
 )

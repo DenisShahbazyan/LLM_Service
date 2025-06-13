@@ -5,12 +5,18 @@ import tiktoken
 from langchain.schema import BaseMessage
 from langchain_anthropic import ChatAnthropic
 from langchain_gigachat import GigaChat
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_openai import ChatOpenAI
 
 from llm.direction import TokenDirection
 
-LLMClientInstance = ChatOpenAI | GigaChat | ChatAnthropic
-LLMClientClass = Type[ChatOpenAI] | Type[GigaChat] | Type[ChatAnthropic]
+LLMClientInstance = ChatOpenAI | GigaChat | ChatAnthropic | ChatGoogleGenerativeAI
+LLMClientClass = (
+    Type[ChatOpenAI]
+    | Type[GigaChat]
+    | Type[ChatAnthropic]
+    | Type[ChatGoogleGenerativeAI]
+)
 
 
 @dataclass
@@ -151,6 +157,23 @@ class ModelRegistry:
                     TokenDirection.DECODE: 75.0 / 1_000_000,
                 },
             ),
+            # Google
+            'gemini-2.0-flash-001': ModelConfig(
+                client_class=ChatGoogleGenerativeAI,
+                token_counter=self._create_google_counter(),
+                pricing={
+                    TokenDirection.ENCODE: 0.1 / 1_000_000,
+                    TokenDirection.DECODE: 0.4 / 1_000_000,
+                },
+            ),
+            'gemini-2.5-pro-preview-06-05': ModelConfig(
+                client_class=ChatGoogleGenerativeAI,
+                token_counter=self._create_google_counter(),
+                pricing={
+                    TokenDirection.ENCODE: 2.5 / 1_000_000,
+                    TokenDirection.DECODE: 15.0 / 1_000_000,
+                },
+            ),
         }
 
     async def get_tokens(self, model_name: str, messages: list[BaseMessage]) -> int:
@@ -226,6 +249,17 @@ class ModelRegistry:
 
     def _create_anthropic_counter(self):
         """Создает функцию счетчика токенов для Anthropic"""
+
+        async def count_tokens(messages: list[BaseMessage], model_name: str) -> int:
+            if not self.client:
+                raise ValueError('Client not initialized')
+
+            return self.client.get_num_tokens_from_messages(messages)
+
+        return count_tokens
+
+    def _create_google_counter(self):
+        """Создает функцию счетчика токенов для Google"""
 
         async def count_tokens(messages: list[BaseMessage], model_name: str) -> int:
             if not self.client:
