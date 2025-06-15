@@ -23,6 +23,33 @@ pip install universal-llm-service
 
 ## Использование:
 
+### Перед началом нужно создать экземпляр модели, langchain - подобный:
+Если в langchain мы создаем такой экземпляр:
+```py
+from langchain_openai import ChatOpenAI
+
+llm = ChatOpenAI(
+    model='gpt-4o-mini',
+    api_key='sk-proj-1234567890',
+    temperature=0,
+)
+```
+
+То здесь мы должны создавать такой:
+```py
+from llm.constructor import BaseLLM
+
+llm = BaseLLM(
+    model='gpt-4o-mini',
+    api_key='sk-proj-1234567890',
+    temperature=0,
+)
+```
+
+И его передаем при создании `LLMService`. Имена полей должны совпадать.
+
+
+
 ### Обычный диалог с LLM:
 ```py
 import asyncio
@@ -80,6 +107,45 @@ if __name__ == '__main__':
     asyncio.run(main())
 ```
 - `result` - ответ модели (запрошенная Pydantic схема)
+
+### Потоковый вывод:
+```py
+import asyncio
+
+
+from example.llm_config import gpt_4o_mini  # noqa: F401
+from llm.service import LLMService
+
+
+async def main() -> None:
+    llm = await LLMService.create(gpt_4o_mini.to_dict())
+    result = llm.astream(message='Расскажи теорему Пифагора')
+    async for chunk in result:
+        print(chunk, end='', flush=True)
+
+
+if __name__ == '__main__':
+    asyncio.run(main())
+```
+
+### Потоковый вывод с использованием контекстного менеджера:
+```py
+import asyncio
+
+from example.llm_config import gpt_4o_mini  # noqa: F401
+from llm.service import LLMService
+
+
+async def main() -> None:
+    llm = await LLMService.create(gpt_4o_mini.to_dict())
+    async with llm.astream_mgr(message='Расскажи теорему Пифагора') as stream:
+        async for chunk in stream:
+            print(chunk, end='', flush=True)
+
+
+if __name__ == '__main__':
+    asyncio.run(main())
+```
 
 ## Подробнее о возможностях:
 - `get_llm_config` - получает конфиг для LLM модели, можно увидеть в примерах, имена полей должны совпадать с именами полей при инициализации моделей для Langchain.
