@@ -1,6 +1,6 @@
 aiohttp==3.11.18
 langchain==0.3.25
-langchain-openai==0.3.17
+langchain-openai==0.3.18
 langchain-gigachat==0.3.10
 langchain-anthropic==0.3.13
 langchain-google-genai==2.1.5
