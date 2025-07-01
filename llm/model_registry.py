@@ -52,28 +52,60 @@ class ModelRegistry:
     def _init_models(self) -> dict[str, ModelConfig]:
         return {
             # OpenAI
+            'gpt-4.1': ModelConfig(
+                client_class=ChatOpenAI,
+                token_counter=self._count_tokens_openai,
+                pricing={
+                    TokenDirection.ENCODE: 2.00 / 1_000_000,
+                    TokenDirection.DECODE: 8.00 / 1_000_000,
+                },
+            ),
+            'gpt-4.1-mini': ModelConfig(
+                client_class=ChatOpenAI,
+                token_counter=self._count_tokens_openai,
+                pricing={
+                    TokenDirection.ENCODE: 0.40 / 1_000_000,
+                    TokenDirection.DECODE: 1.60 / 1_000_000,
+                },
+            ),
+            'gpt-4.1-nano': ModelConfig(
+                client_class=ChatOpenAI,
+                token_counter=self._count_tokens_openai,
+                pricing={
+                    TokenDirection.ENCODE: 0.10 / 1_000_000,
+                    TokenDirection.DECODE: 0.40 / 1_000_000,
+                },
+            ),
+            'gpt-4.5-preview': ModelConfig(
+                client_class=ChatOpenAI,
+                token_counter=self._count_tokens_openai,
+                pricing={
+                    TokenDirection.ENCODE: 75.00 / 1_000_000,
+                    TokenDirection.DECODE: 150.00 / 1_000_000,
+                },
+            ),
             'gpt-4o-mini': ModelConfig(
                 client_class=ChatOpenAI,
                 token_counter=self._count_tokens_openai,
                 pricing={
                     TokenDirection.ENCODE: 0.15 / 1_000_000,
-                    TokenDirection.DECODE: 0.6 / 1_000_000,
+                    TokenDirection.DECODE: 0.60 / 1_000_000,
                 },
             ),
             'gpt-4o': ModelConfig(
                 client_class=ChatOpenAI,
                 token_counter=self._count_tokens_openai,
                 pricing={
-                    TokenDirection.ENCODE: 2.5 / 1_000_000,
-                    TokenDirection.DECODE: 10.0 / 1_000_000,
+                    TokenDirection.ENCODE: 2.50 / 1_000_000,
+                    TokenDirection.DECODE: 10.00 / 1_000_000,
                 },
             ),
             'o3-2025-04-16': ModelConfig(
                 client_class=ChatOpenAI,
                 token_counter=self._count_tokens_openai,
                 pricing={
-                    TokenDirection.ENCODE: 2.0 / 1_000_000,
-                    TokenDirection.DECODE: 8.0 / 1_000_000,
+                    TokenDirection.ENCODE: 2.00 / 1_000_000,
+                    TokenDirection.DECODE: 8.00 / 1_000_000,
                 },
             ),
             'o4-mini-2025-04-16': ModelConfig(
@@ -144,24 +176,24 @@ class ModelRegistry:
                 client_class=ChatAnthropic,
                 token_counter=self._create_anthropic_counter(),
                 pricing={
-                    TokenDirection.ENCODE: 0.8 / 1_000_000,
-                    TokenDirection.DECODE: 4.0 / 1_000_000,
+                    TokenDirection.ENCODE: 0.80 / 1_000_000,
+                    TokenDirection.DECODE: 4.00 / 1_000_000,
                 },
             ),
             'claude-3-7-sonnet-latest': ModelConfig(
                 client_class=ChatAnthropic,
                 token_counter=self._create_anthropic_counter(),
                 pricing={
-                    TokenDirection.ENCODE: 3.0 / 1_000_000,
-                    TokenDirection.DECODE: 15.0 / 1_000_000,
+                    TokenDirection.ENCODE: 3.00 / 1_000_000,
+                    TokenDirection.DECODE: 15.00 / 1_000_000,
                 },
             ),
             'claude-opus-4-20250514': ModelConfig(
                 client_class=ChatAnthropic,
                 token_counter=self._create_anthropic_counter(),
                 pricing={
-                    TokenDirection.ENCODE: 15.0 / 1_000_000,
-                    TokenDirection.DECODE: 75.0 / 1_000_000,
+                    TokenDirection.ENCODE: 15.00 / 1_000_000,
+                    TokenDirection.DECODE: 75.00 / 1_000_000,
                 },
             ),
             # Google
@@ -169,16 +201,16 @@ class ModelRegistry:
                 client_class=ChatGoogleGenerativeAI,
                 token_counter=self._create_google_counter(),
                 pricing={
-                    TokenDirection.ENCODE: 0.1 / 1_000_000,
-                    TokenDirection.DECODE: 0.4 / 1_000_000,
+                    TokenDirection.ENCODE: 0.10 / 1_000_000,
+                    TokenDirection.DECODE: 0.40 / 1_000_000,
                 },
             ),
             'gemini-2.5-pro-preview-06-05': ModelConfig(
                 client_class=ChatGoogleGenerativeAI,
                 token_counter=self._create_google_counter(),
                 pricing={
-                    TokenDirection.ENCODE: 2.5 / 1_000_000,
-                    TokenDirection.DECODE: 15.0 / 1_000_000,
+                    TokenDirection.ENCODE: 2.50 / 1_000_000,
+                    TokenDirection.DECODE: 15.00 / 1_000_000,
                 },
             ),
             # Groq
@@ -186,8 +218,8 @@ class ModelRegistry:
                 client_class=ChatXAI,
                 token_counter=self._create_xai_counter(),
                 pricing={
-                    TokenDirection.ENCODE: 0.3 / 1_000_000,
-                    TokenDirection.DECODE: 0.5 / 1_000_000,
+                    TokenDirection.ENCODE: 0.30 / 1_000_000,
+                    TokenDirection.DECODE: 0.50 / 1_000_000,
                 },
             ),
         }

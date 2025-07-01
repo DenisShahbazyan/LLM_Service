@@ -11,6 +11,10 @@ from example.llm_config import giga_chat_2_max  # noqa: F401
 from example.llm_config import giga_chat_2_pro  # noqa: F401
 from example.llm_config import giga_chat_max  # noqa: F401
 from example.llm_config import giga_chat_pro  # noqa: F401
+from example.llm_config import gpt_4_1  # noqa: F401
+from example.llm_config import gpt_4_1_mini  # noqa: F401
+from example.llm_config import gpt_4_1_nano  # noqa: F401
+from example.llm_config import gpt_4_5_preview  # noqa: F401
 from example.llm_config import gpt_4o  # noqa: F401
 from example.llm_config import gpt_4o_mini  # noqa: F401
 from example.llm_config import grok_3_mini  # noqa: F401
@@ -60,11 +64,11 @@ async def grok() -> None:
 
 
 async def main() -> None:
-    # await chatgpt()
+    await chatgpt()
     # await gigachat()
     # await claude()
     # await gemini()
-    await grok()
+    # await grok()
 
 
 if __name__ == '__main__':

@@ -9,6 +9,26 @@ GEMINI_KEY = os.getenv('GEMINI_KEY')
 XAI_KEY = os.getenv('XAI_KEY')
 
 
+gpt_4_1 = BaseLLM(
+    model='gpt-4.1',
+    api_key=CHAT_GPT__KEY,
+)
+
+gpt_4_1_mini = BaseLLM(
+    model='gpt-4.1-mini',
+    api_key=CHAT_GPT__KEY,
+)
+
+gpt_4_1_nano = BaseLLM(
+    model='gpt-4.1-nano',
+    api_key=CHAT_GPT__KEY,
+)
+
+gpt_4_5_preview = BaseLLM(
+    model='gpt-4.5-preview',
+    api_key=CHAT_GPT__KEY,
+)
+
 gpt_4o_mini = BaseLLM(
     model='gpt-4o-mini',
     api_key=CHAT_GPT__KEY,
