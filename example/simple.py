@@ -1,30 +1,11 @@
 import asyncio
 
-from example.llm_config import claude_3_5_haiku  # noqa: F401
-from example.llm_config import claude_3_7_sonnet  # noqa: F401
-from example.llm_config import claude_opus_4  # noqa: F401
-from example.llm_config import gemini_2_0_flash_001  # noqa: F401
-from example.llm_config import gemini_2_5_pro  # noqa: F401
-from example.llm_config import giga_chat  # noqa: F401
-from example.llm_config import giga_chat_2  # noqa: F401
-from example.llm_config import giga_chat_2_max  # noqa: F401
-from example.llm_config import giga_chat_2_pro  # noqa: F401
-from example.llm_config import giga_chat_max  # noqa: F401
-from example.llm_config import giga_chat_pro  # noqa: F401
-from example.llm_config import gpt_4_1  # noqa: F401
-from example.llm_config import gpt_4_1_mini  # noqa: F401
-from example.llm_config import gpt_4_1_nano  # noqa: F401
-from example.llm_config import gpt_4_5_preview  # noqa: F401
-from example.llm_config import gpt_4o  # noqa: F401
-from example.llm_config import gpt_4o_mini  # noqa: F401
-from example.llm_config import grok_3_mini  # noqa: F401
-from example.llm_config import o3_2025_04_16  # noqa: F401
-from example.llm_config import o4_mini_2025_04_16  # noqa: F401
+from example.common_imports import *  # noqa: F403
 from llm.service import LLMService
 
 
 async def chatgpt() -> None:
-    llm = await LLMService.create(gpt_4o_mini.to_dict())
+    llm = await LLMService.create(gpt_4o_mini.to_dict())  # noqa: F405
     result = await llm.ainvoke(message='Сколько будет 2 + 2?')
     print(result)
     print(llm.usage)
@@ -32,7 +13,7 @@ async def chatgpt() -> None:
 
 
 async def gigachat() -> None:
-    llm = await LLMService.create(giga_chat.to_dict())
+    llm = await LLMService.create(giga_chat.to_dict())  # noqa: F405
     result = await llm.ainvoke(message='Сколько будет 2 + 2?')
     print(result)
     print(llm.usage)
@@ -40,7 +21,7 @@ async def gigachat() -> None:
 
 
 async def claude() -> None:
-    llm = await LLMService.create(claude_3_5_haiku.to_dict())
+    llm = await LLMService.create(claude_3_5_haiku.to_dict())  # noqa: F405
     result = await llm.ainvoke(message='Сколько будет 2 + 2?')
     print(result)
     print(llm.usage)
@@ -48,7 +29,7 @@ async def claude() -> None:
 
 
 async def gemini() -> None:
-    llm = await LLMService.create(gemini_2_5_pro.to_dict())
+    llm = await LLMService.create(gemini_2_5_pro.to_dict())  # noqa: F405
     result = await llm.ainvoke(message='Сколько будет 2 + 2?')
     print(result)
     print(llm.usage)
@@ -56,7 +37,7 @@ async def gemini() -> None:
 
 
 async def grok() -> None:
-    llm = await LLMService.create(grok_3_mini.to_dict())
+    llm = await LLMService.create(grok_3_mini.to_dict())  # noqa: F405
     result = await llm.ainvoke(message='Сколько будет 2 + 2?')
     print(result)
     print(llm.usage)
