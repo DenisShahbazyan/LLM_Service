@@ -1,8 +1,6 @@
 from dataclasses import dataclass
 from typing import Any, Callable, Type
 
-import aiohttp
-import tiktoken
 from langchain.schema import BaseMessage
 from langchain_anthropic import ChatAnthropic
 from langchain_gigachat import GigaChat
@@ -11,6 +9,7 @@ from langchain_openai import ChatOpenAI
 from langchain_xai import ChatXAI
 
 from llm.direction import TokenDirection
+from llm.token_counters import TokenCounterFactory
 
 LLMClientInstance = (
     ChatOpenAI | GigaChat | ChatAnthropic | ChatGoogleGenerativeAI | ChatXAI
@@ -54,7 +53,7 @@ class ModelRegistry:
             # OpenAI
             'gpt-4.1': ModelConfig(
                 client_class=ChatOpenAI,
-                token_counter=self._count_tokens_openai,
+                token_counter=TokenCounterFactory().create_openai_counter(),
                 pricing={
                     TokenDirection.ENCODE: 2.00 / 1_000_000,
                     TokenDirection.DECODE: 8.00 / 1_000_000,
@@ -62,7 +61,7 @@ class ModelRegistry:
             ),
             'gpt-4.1-mini': ModelConfig(
                 client_class=ChatOpenAI,
-                token_counter=self._count_tokens_openai,
+                token_counter=TokenCounterFactory().create_openai_counter(),
                 pricing={
                     TokenDirection.ENCODE: 0.40 / 1_000_000,
                     TokenDirection.DECODE: 1.60 / 1_000_000,
@@ -70,7 +69,7 @@ class ModelRegistry:
             ),
             'gpt-4.1-nano': ModelConfig(
                 client_class=ChatOpenAI,
-                token_counter=self._count_tokens_openai,
+                token_counter=TokenCounterFactory().create_openai_counter(),
                 pricing={
                     TokenDirection.ENCODE: 0.10 / 1_000_000,
                     TokenDirection.DECODE: 0.40 / 1_000_000,
@@ -78,7 +77,7 @@ class ModelRegistry:
             ),
             'gpt-4.5-preview': ModelConfig(
                 client_class=ChatOpenAI,
-                token_counter=self._count_tokens_openai,
+                token_counter=TokenCounterFactory().create_openai_counter(),
                 pricing={
                     TokenDirection.ENCODE: 75.00 / 1_000_000,
                     TokenDirection.DECODE: 150.00 / 1_000_000,
@@ -86,7 +85,7 @@ class ModelRegistry:
             ),
             'gpt-4o-mini': ModelConfig(
                 client_class=ChatOpenAI,
-                token_counter=self._count_tokens_openai,
+                token_counter=TokenCounterFactory().create_openai_counter(),
                 pricing={
                     TokenDirection.ENCODE: 0.15 / 1_000_000,
                     TokenDirection.DECODE: 0.60 / 1_000_000,
@@ -94,7 +93,7 @@ class ModelRegistry:
             ),
             'gpt-4o': ModelConfig(
                 client_class=ChatOpenAI,
-                token_counter=self._count_tokens_openai,
+                token_counter=TokenCounterFactory().create_openai_counter(),
                 pricing={
                     TokenDirection.ENCODE: 2.50 / 1_000_000,
                     TokenDirection.DECODE: 10.00 / 1_000_000,
@@ -102,7 +101,7 @@ class ModelRegistry:
             ),
             'o3-2025-04-16': ModelConfig(
                 client_class=ChatOpenAI,
-                token_counter=self._count_tokens_openai,
+                token_counter=TokenCounterFactory().create_openai_counter(),
                 pricing={
                     TokenDirection.ENCODE: 2.00 / 1_000_000,
                     TokenDirection.DECODE: 8.00 / 1_000_000,
@@ -110,7 +109,7 @@ class ModelRegistry:
             ),
             'o4-mini-2025-04-16': ModelConfig(
                 client_class=ChatOpenAI,
-                token_counter=self._count_tokens_openai,
+                token_counter=TokenCounterFactory().create_openai_counter(),
                 pricing={
                     TokenDirection.ENCODE: 1.10 / 1_000_000,
                     TokenDirection.DECODE: 4.40 / 1_000_000,
@@ -119,7 +118,7 @@ class ModelRegistry:
             # Gigachat
             'GigaChat': ModelConfig(
                 client_class=GigaChat,
-                token_counter=self._create_gigachat_counter(),
+                token_counter=TokenCounterFactory().create_gigachat_counter(),
                 pricing={
                     # 5_000 рублей / 25_000_000 токенов / курс доллара
                     TokenDirection.ENCODE: 5_000 / 25_000_000 / self.usd_rate,
@@ -128,7 +127,7 @@ class ModelRegistry:
             ),
             'GigaChat-2': ModelConfig(
                 client_class=GigaChat,
-                token_counter=self._create_gigachat_counter(),
+                token_counter=TokenCounterFactory().create_gigachat_counter(),
                 pricing={
                     # 5_000 рублей / 25_000_000 токенов / курс доллара
                     TokenDirection.ENCODE: 5_000 / 25_000_000 / self.usd_rate,
@@ -137,7 +136,7 @@ class ModelRegistry:
             ),
             'GigaChat-Pro': ModelConfig(
                 client_class=GigaChat,
-                token_counter=self._create_gigachat_counter(),
+                token_counter=TokenCounterFactory().create_gigachat_counter(),
                 pricing={
                     # 10_500 рублей / 7_000_000 токенов / курс доллара
                     TokenDirection.ENCODE: 10_500 / 7_000_000 / self.usd_rate,
@@ -146,7 +145,7 @@ class ModelRegistry:
             ),
             'GigaChat-2-Pro': ModelConfig(
                 client_class=GigaChat,
-                token_counter=self._create_gigachat_counter(),
+                token_counter=TokenCounterFactory().create_gigachat_counter(),
                 pricing={
                     # 10_500 рублей / 7_000_000 токенов / курс доллара
                     TokenDirection.ENCODE: 10_500 / 7_000_000 / self.usd_rate,
@@ -155,7 +154,7 @@ class ModelRegistry:
             ),
             'GigaChat-Max': ModelConfig(
                 client_class=GigaChat,
-                token_counter=self._create_gigachat_counter(),
+                token_counter=TokenCounterFactory().create_gigachat_counter(),
                 pricing={
                     # 15_600 рублей / 8_000_000 токенов / курс доллара
                     TokenDirection.ENCODE: 15_600 / 8_000_000 / self.usd_rate,
@@ -164,7 +163,7 @@ class ModelRegistry:
             ),
             'GigaChat-2-Max': ModelConfig(
                 client_class=GigaChat,
-                token_counter=self._create_gigachat_counter(),
+                token_counter=TokenCounterFactory().create_gigachat_counter(),
                 pricing={
                     # 15_600 рублей / 8_000_000 токенов / курс доллара
                     TokenDirection.ENCODE: 15_600 / 8_000_000 / self.usd_rate,
@@ -174,7 +173,7 @@ class ModelRegistry:
             # Anthropic
             'claude-3-5-haiku-latest': ModelConfig(
                 client_class=ChatAnthropic,
-                token_counter=self._create_anthropic_counter(),
+                token_counter=TokenCounterFactory().create_anthropic_counter(),
                 pricing={
                     TokenDirection.ENCODE: 0.80 / 1_000_000,
                     TokenDirection.DECODE: 4.00 / 1_000_000,
@@ -182,7 +181,7 @@ class ModelRegistry:
             ),
             'claude-3-7-sonnet-latest': ModelConfig(
                 client_class=ChatAnthropic,
-                token_counter=self._create_anthropic_counter(),
+                token_counter=TokenCounterFactory().create_anthropic_counter(),
                 pricing={
                     TokenDirection.ENCODE: 3.00 / 1_000_000,
                     TokenDirection.DECODE: 15.00 / 1_000_000,
@@ -190,7 +189,7 @@ class ModelRegistry:
             ),
             'claude-opus-4-20250514': ModelConfig(
                 client_class=ChatAnthropic,
-                token_counter=self._create_anthropic_counter(),
+                token_counter=TokenCounterFactory().create_anthropic_counter(),
                 pricing={
                     TokenDirection.ENCODE: 15.00 / 1_000_000,
                     TokenDirection.DECODE: 75.00 / 1_000_000,
@@ -199,7 +198,7 @@ class ModelRegistry:
             # Google
             'gemini-2.0-flash-001': ModelConfig(
                 client_class=ChatGoogleGenerativeAI,
-                token_counter=self._create_google_counter(),
+                token_counter=TokenCounterFactory().create_google_counter(),
                 pricing={
                     TokenDirection.ENCODE: 0.10 / 1_000_000,
                     TokenDirection.DECODE: 0.40 / 1_000_000,
@@ -207,7 +206,7 @@ class ModelRegistry:
             ),
             'gemini-2.5-pro-preview-06-05': ModelConfig(
                 client_class=ChatGoogleGenerativeAI,
-                token_counter=self._create_google_counter(),
+                token_counter=TokenCounterFactory().create_google_counter(),
                 pricing={
                     TokenDirection.ENCODE: 2.50 / 1_000_000,
                     TokenDirection.DECODE: 15.00 / 1_000_000,
@@ -216,7 +215,7 @@ class ModelRegistry:
             # Groq
             'grok-3-mini': ModelConfig(
                 client_class=ChatXAI,
-                token_counter=self._create_xai_counter(),
+                token_counter=TokenCounterFactory().create_xai_counter(),
                 pricing={
                     TokenDirection.ENCODE: 0.30 / 1_000_000,
                     TokenDirection.DECODE: 0.50 / 1_000_000,
@@ -236,7 +235,11 @@ class ModelRegistry:
         """
         if model_name not in self._models:
             raise ValueError(f'Unknown model: {model_name}')
-        return await self._models[model_name].token_counter(messages, model_name)
+        return await self._models[model_name].token_counter(
+            messages,
+            model_name,
+            self.client,
+        )
 
     def init_client(self, config: dict[str, Any]) -> LLMClientInstance:
         """Инициализирует клиента LLM
@@ -266,82 +269,3 @@ class ModelRegistry:
         if model_name not in self._models:
             raise ValueError(f'Unknown model: {model_name}')
         return self._models[model_name].pricing[direction]
-
-    @staticmethod
-    async def _count_tokens_openai(messages: list[BaseMessage], model_name: str) -> int:
-        """Подсчитывает количество токенов, для моделей OpenAI
-
-        Args:
-            messages (list[BaseMessage]): Сообщения
-            model_name (str): Название модели
-
-        Returns:
-            int: Количество токенов
-        """
-        encoding = tiktoken.encoding_for_model(model_name)
-        text = ' '.join(str(m.content) for m in messages)
-        return len(encoding.encode(text))
-
-    def _create_gigachat_counter(self):
-        """Создает функцию счетчика токенов для Gigachat"""
-
-        async def count_tokens(messages: list[BaseMessage], model_name: str) -> int:
-            if not self.client:
-                raise ValueError('Client not initialized')
-
-            text = ' '.join(str(m.content) for m in messages)
-            response = await self.client.atokens_count([text], model_name)
-            return response[0].tokens
-
-        return count_tokens
-
-    def _create_anthropic_counter(self):
-        """Создает функцию счетчика токенов для Anthropic"""
-
-        async def count_tokens(messages: list[BaseMessage], model_name: str) -> int:
-            if not self.client:
-                raise ValueError('Client not initialized')
-
-            return self.client.get_num_tokens_from_messages(messages)
-
-        return count_tokens
-
-    def _create_google_counter(self):
-        """Создает функцию счетчика токенов для Google"""
-
-        async def count_tokens(messages: list[BaseMessage], model_name: str) -> int:
-            if not self.client:
-                raise ValueError('Client not initialized')
-
-            return self.client.get_num_tokens_from_messages(messages)
-
-        return count_tokens
-
-    def _create_xai_counter(self):
-        """Создает функцию счетчика токенов для xAI"""
-
-        async def count_tokens(messages: list[BaseMessage], model_name: str) -> int:
-            if not self.client:
-                raise ValueError('Client not initialized')
-
-            x_api_key = self.client.xai_api_key._secret_value
-
-            url = 'https://api.x.ai/v1/tokenize-text'
-
-            headers = {
-                'Authorization': f"Bearer {x_api_key}",
-                'Content-Type': 'application/json',
-            }
-
-            text = ' '.join(str(m.content) for m in messages)
-            payload = {
-                'text': text,
-                'model': model_name,
-            }
-
-            async with aiohttp.ClientSession() as session:
-                async with session.post(url, headers=headers, json=payload) as response:
-                    data = await response.json()
-                    return len(data['token_ids'])
-
-        return count_tokens

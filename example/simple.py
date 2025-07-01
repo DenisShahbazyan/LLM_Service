@@ -29,7 +29,7 @@ async def claude() -> None:
 
 
 async def gemini() -> None:
-    llm = await LLMService.create(gemini_2_5_pro.to_dict())  # noqa: F405
+    llm = await LLMService.create(gemini_2_0_flash_001.to_dict())  # noqa: F405
     result = await llm.ainvoke(message='Сколько будет 2 + 2?')
     print(result)
     print(llm.usage)
@@ -45,11 +45,11 @@ async def grok() -> None:
 
 
 async def main() -> None:
-    await chatgpt()
+    # await chatgpt()
     # await gigachat()
     # await claude()
     # await gemini()
-    # await grok()
+    await grok()
 
 
 if __name__ == '__main__':
