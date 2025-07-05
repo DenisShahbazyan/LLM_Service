@@ -126,3 +126,13 @@ grok_3_mini = BaseLLM(
     model='grok-3-mini',
     api_key=XAI_KEY,
 )
+
+grok_3 = BaseLLM(
+    model='grok-3',
+    api_key=XAI_KEY,
+)
+
+grok_3_fast = BaseLLM(
+    model='grok-3-fast',
+    api_key=XAI_KEY,
+)

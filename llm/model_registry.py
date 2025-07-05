@@ -221,6 +221,22 @@ class ModelRegistry:
                     TokenDirection.DECODE: 0.50 / 1_000_000,
                 },
             ),
+            'grok-3': ModelConfig(
+                client_class=ChatXAI,
+                token_counter=TokenCounterFactory().create_xai_counter(),
+                pricing={
+                    TokenDirection.ENCODE: 3.00 / 1_000_000,
+                    TokenDirection.DECODE: 15.00 / 1_000_000,
+                },
+            ),
+            'grok-3-fast': ModelConfig(
+                client_class=ChatXAI,
+                token_counter=TokenCounterFactory().create_xai_counter(),
+                pricing={
+                    TokenDirection.ENCODE: 5.00 / 1_000_000,
+                    TokenDirection.DECODE: 25.00 / 1_000_000,
+                },
+            ),
         }
 
     async def get_tokens(self, model_name: str, messages: list[BaseMessage]) -> int:
