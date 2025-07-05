@@ -187,12 +187,20 @@ class ModelRegistry:
                     TokenDirection.DECODE: 15.00 / 1_000_000,
                 },
             ),
-            'claude-opus-4-20250514': ModelConfig(
+            'claude-opus-4-0': ModelConfig(
                 client_class=ChatAnthropic,
                 token_counter=TokenCounterFactory().create_anthropic_counter(),
                 pricing={
                     TokenDirection.ENCODE: 15.00 / 1_000_000,
                     TokenDirection.DECODE: 75.00 / 1_000_000,
+                },
+            ),
+            'claude-sonnet-4-0': ModelConfig(
+                client_class=ChatAnthropic,
+                token_counter=TokenCounterFactory().create_anthropic_counter(),
+                pricing={
+                    TokenDirection.ENCODE: 3.00 / 1_000_000,
+                    TokenDirection.DECODE: 15.00 / 1_000_000,
                 },
             ),
             # Google
@@ -202,6 +210,14 @@ class ModelRegistry:
                 pricing={
                     TokenDirection.ENCODE: 0.10 / 1_000_000,
                     TokenDirection.DECODE: 0.40 / 1_000_000,
+                },
+            ),
+            'gemini-2.5-flash': ModelConfig(
+                client_class=ChatGoogleGenerativeAI,
+                token_counter=TokenCounterFactory().create_google_counter(),
+                pricing={
+                    TokenDirection.ENCODE: 0.30 / 1_000_000,
+                    TokenDirection.DECODE: 1.00 / 1_000_000,
                 },
             ),
             'gemini-2.5-pro-preview-06-05': ModelConfig(

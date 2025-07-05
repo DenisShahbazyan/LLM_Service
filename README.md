@@ -210,7 +210,11 @@ python -m example.structured  # Пример общения с LLM со стру
 - `GigaChat-2-Max`
 - `claude-3-5-haiku-latest`
 - `claude-3-7-sonnet-latest`
-- `claude-opus-4-20250514`
+- `claude-opus-4-0`
+- `claude-sonnet-4-0`
 - `gemini-2.0-flash-001`
+- `gemini-2.5-flash`
 - `gemini-2.5-pro-preview-06-05`
 - `grok-3-mini`
+- `grok-3`
+- `grok-3-fast`

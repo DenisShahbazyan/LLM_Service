@@ -2,7 +2,9 @@
 from example.llm_config import claude_3_5_haiku  # noqa: F401
 from example.llm_config import claude_3_7_sonnet  # noqa: F401
 from example.llm_config import claude_opus_4  # noqa: F401
+from example.llm_config import claude_sonnet_4  # noqa: F401
 from example.llm_config import gemini_2_0_flash_001  # noqa: F401
+from example.llm_config import gemini_2_5_flash  # noqa: F401
 from example.llm_config import gemini_2_5_pro  # noqa: F401
 from example.llm_config import giga_chat  # noqa: F401
 from example.llm_config import giga_chat_2  # noqa: F401

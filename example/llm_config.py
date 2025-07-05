@@ -108,12 +108,22 @@ claude_3_7_sonnet = BaseLLM(
 )
 
 claude_opus_4 = BaseLLM(
-    model='claude-opus-4-20250514',
+    model='claude-opus-4-0',
+    api_key=ANTHROPIC__KEY,
+)
+
+claude_sonnet_4 = BaseLLM(
+    model='claude-sonnet-4-0',
     api_key=ANTHROPIC__KEY,
 )
 
 gemini_2_0_flash_001 = BaseLLM(
     model='gemini-2.0-flash-001',
+    api_key=GEMINI_KEY,
+)
+
+gemini_2_5_flash = BaseLLM(
+    model='gemini-2.5-flash',
     api_key=GEMINI_KEY,
 )
 
