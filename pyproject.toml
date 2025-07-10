@@ -35,7 +35,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "universal-llm-service"
-version = "1.0.6"
+version = "1.0.7"
 authors = [{ name = "Денис Шахбазян", email = "otbephncb@gmail.com" }]
 description = "Библиотека для работы с языковыми моделями"
 readme = "README.md"
@@ -48,27 +48,29 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
 ]
 dependencies = [
-    "aiohttp==3.11.18",
-    "langchain==0.3.25",
-    "langchain-openai==0.3.18",
-    "langchain-gigachat==0.3.10",
-    "langchain-anthropic==0.3.13",
-    "langchain-google-genai==2.1.5",
-    "langchain-xai==0.2.4",
-    "tiktoken==0.9.0",
-]
-
-[project.optional-dependencies]
-dev = [
-    "pre_commit==4.2.0",
-    "Flake8-pyproject==1.2.3",
-    "build==1.2.2.post1",
-    "twine==6.1.0",
+    "aiohttp>=3.12.14",
+    "langchain>=0.3.26",
+    "langchain-anthropic>=0.3.17",
+    "langchain-gigachat>=0.3.11",
+    "langchain-google-genai>=2.1.7",
+    "langchain-openai>=0.3.27",
+    "langchain-xai>=0.2.4",
+    "tiktoken>=0.9.0",
 ]
 
 [project.urls]
 "Homepage" = "https://github.com/DenisShahbazyan/LLM_Service"
 "Bug Tracker" = "https://github.com/DenisShahbazyan/LLM_Service/issues"
+
+[dependency-groups]
+dev = [
+    "black>=25.1.0",
+    "build>=1.2.2.post1",
+    "flake8>=7.3.0",
+    "flake8-pyproject>=1.2.3",
+    "pre-commit>=4.2.0",
+    "twine>=6.1.0",
+]
 
 [tool.hatch.build.targets.wheel]
 packages = ["llm"]

@@ -45,10 +45,10 @@ async def grok() -> None:
 
 
 async def main() -> None:
-    # await chatgpt()
+    await chatgpt()
     # await gigachat()
     # await claude()
-    await gemini()
+    # await gemini()
     # await grok()
 
 
