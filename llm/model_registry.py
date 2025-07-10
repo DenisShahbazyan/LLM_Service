@@ -3,6 +3,7 @@ from typing import Any, Callable, Type
 
 from langchain.schema import BaseMessage
 from langchain_anthropic import ChatAnthropic
+from langchain_deepseek import ChatDeepSeek
 from langchain_gigachat import GigaChat
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_openai import ChatOpenAI
@@ -12,7 +13,12 @@ from llm.direction import TokenDirection
 from llm.token_counters import TokenCounterFactory
 
 LLMClientInstance = (
-    ChatOpenAI | GigaChat | ChatAnthropic | ChatGoogleGenerativeAI | ChatXAI
+    ChatOpenAI
+    | GigaChat
+    | ChatAnthropic
+    | ChatGoogleGenerativeAI
+    | ChatXAI
+    | ChatDeepSeek
 )
 LLMClientClass = (
     Type[ChatOpenAI]
@@ -20,6 +26,7 @@ LLMClientClass = (
     | Type[ChatAnthropic]
     | Type[ChatGoogleGenerativeAI]
     | Type[ChatXAI]
+    | Type[ChatDeepSeek]
 )
 
 
@@ -41,6 +48,7 @@ class ModelRegistry:
         - имена моделей https://docs.anthropic.com/en/docs/about-claude/models/overview#model-names
     - Цены Google: https://ai.google.dev/gemini-api/docs/pricing#gemini-2.5-pro-preview
     - Цены XAI: https://docs.x.ai/docs/models
+    - Цены DeepSeek: https://api-docs.deepseek.com/quick_start/pricing
     """  # noqa: E501
 
     def __init__(self, usd_rate: float) -> None:
@@ -251,6 +259,23 @@ class ModelRegistry:
                 pricing={
                     TokenDirection.ENCODE: 5.00 / 1_000_000,
                     TokenDirection.DECODE: 25.00 / 1_000_000,
+                },
+            ),
+            # DeepSeek
+            'deepseek-chat': ModelConfig(
+                client_class=ChatDeepSeek,
+                token_counter=TokenCounterFactory().create_deepseek_counter(),
+                pricing={
+                    TokenDirection.ENCODE: 0.27 / 1_000_000,
+                    TokenDirection.DECODE: 1.10 / 1_000_000,
+                },
+            ),
+            'deepseek-reasoner': ModelConfig(
+                client_class=ChatDeepSeek,
+                token_counter=TokenCounterFactory().create_deepseek_counter(),
+                pricing={
+                    TokenDirection.ENCODE: 0.55 / 1_000_000,
+                    TokenDirection.DECODE: 2.19 / 1_000_000,
                 },
             ),
         }

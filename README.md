@@ -218,3 +218,5 @@ python -m example.structured  # Пример общения с LLM со стру
 - `grok-3-mini`
 - `grok-3`
 - `grok-3-fast`
+- `deepseek-chat`
+- `deepseek-reasoner`

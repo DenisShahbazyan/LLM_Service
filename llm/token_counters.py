@@ -2,13 +2,19 @@ import aiohttp
 import tiktoken
 from langchain.schema import BaseMessage
 from langchain_anthropic import ChatAnthropic
+from langchain_deepseek import ChatDeepSeek
 from langchain_gigachat import GigaChat
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_openai import ChatOpenAI
 from langchain_xai import ChatXAI
 
 LLMClientInstance = (
-    ChatOpenAI | GigaChat | ChatAnthropic | ChatGoogleGenerativeAI | ChatXAI
+    ChatOpenAI
+    | GigaChat
+    | ChatAnthropic
+    | ChatGoogleGenerativeAI
+    | ChatXAI
+    | ChatDeepSeek
 )
 
 
@@ -164,5 +170,32 @@ class TokenCounterFactory:
                 async with session.post(url, headers=headers, json=payload) as response:
                     data = await response.json()
                     return len(data['token_ids'])
+
+        return count_tokens
+
+    @staticmethod
+    def create_deepseek_counter():
+        """Создает функцию счетчика токенов для DeepSeek"""
+
+        async def count_tokens(
+            messages: list[BaseMessage],
+            model_name: str,
+            client: LLMClientInstance | None = None,
+        ) -> int:
+            """Подсчитывает количество токенов.
+
+            Args:
+                messages (list[BaseMessage]): Сообщения
+                model_name (str): Название модели
+                client (LLMClientInstance | None, optional): Клиент LLM.
+                    По умолчанию None.
+
+            Returns:
+                int: Количество токенов
+            """
+            if not client:
+                raise ValueError('Client not initialized')
+
+            return client.get_num_tokens_from_messages(messages)
 
         return count_tokens

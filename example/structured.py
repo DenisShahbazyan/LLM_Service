@@ -70,12 +70,22 @@ async def grok() -> None:
     print(structured_llm.counter.model_registry.usd_rate)
 
 
+async def deepseek() -> None:
+    llm = await LLMService.create(deepseek_chat.to_dict())  # noqa: F405
+    structured_llm = await llm.with_structured_output(RelatedConceptListOutput)
+    result = await structured_llm.ainvoke(message=SYSTEM_PROMPT)
+    print(result)
+    print(structured_llm.usage)
+    print(structured_llm.counter.model_registry.usd_rate)
+
+
 async def main() -> None:
-    # await chatgpt()
+    await chatgpt()
     # await gigachat()
     # await claude()
     # await gemini()  # Проверить
-    await grok()
+    # await grok()
+    # await deepseek()  # Проверить
 
 
 if __name__ == '__main__':

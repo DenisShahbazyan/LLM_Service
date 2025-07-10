@@ -44,12 +44,21 @@ async def grok() -> None:
     print(llm.counter.model_registry.usd_rate)
 
 
+async def deepseek() -> None:
+    llm = await LLMService.create(deepseek_chat.to_dict())  # noqa: F405
+    result = await llm.ainvoke(message='Сколько будет 2 + 2?')
+    print(result)
+    print(llm.usage)
+    print(llm.counter.model_registry.usd_rate)
+
+
 async def main() -> None:
     await chatgpt()
     # await gigachat()
     # await claude()
     # await gemini()
     # await grok()
+    # await deepseek()
 
 
 if __name__ == '__main__':

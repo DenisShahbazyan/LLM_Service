@@ -39,12 +39,20 @@ async def grok_mgr() -> None:
             print(chunk, end='', flush=True)
 
 
+async def deepseek_mgr() -> None:
+    llm = await LLMService.create(deepseek_chat.to_dict())  # noqa: F405
+    async with llm.astream_mgr(message='Расскажи теорему Пифагора') as stream:
+        async for chunk in stream:
+            print(chunk, end='', flush=True)
+
+
 async def main() -> None:
-    # await chatgpt_mgr()
+    await chatgpt_mgr()
     # await gigachat_mgr()
     # await claude_mgr()
     # await gemini_mgr()
-    await grok_mgr()
+    # await grok_mgr()
+    # await deepseek_mgr()
 
 
 if __name__ == '__main__':

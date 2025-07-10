@@ -7,7 +7,7 @@ GIGACHAT__KEY = os.getenv('GIGACHAT__KEY')
 ANTHROPIC__KEY = os.getenv('ANTHROPIC__KEY')
 GEMINI_KEY = os.getenv('GEMINI_KEY')
 XAI_KEY = os.getenv('XAI_KEY')
-
+DEEPSEEK_KEY = os.getenv('DEEPSEEK_KEY')
 
 gpt_4_1 = BaseLLM(
     model='gpt-4.1',
@@ -145,4 +145,14 @@ grok_3 = BaseLLM(
 grok_3_fast = BaseLLM(
     model='grok-3-fast',
     api_key=XAI_KEY,
+)
+
+deepseek_chat = BaseLLM(
+    model='deepseek-chat',
+    api_key=DEEPSEEK_KEY,
+)
+
+deepseek_reasoner = BaseLLM(
+    model='deepseek-reasoner',
+    api_key=DEEPSEEK_KEY,
 )
