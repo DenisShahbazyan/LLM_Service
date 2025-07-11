@@ -194,29 +194,31 @@ python -m example.structured  # Пример общения с LLM со стру
 - Добавить подсчет токенов для стримминговой передачи
 
 # Список поддерживаемых моделей:
-- `gpt-4.1`
-- `gpt-4.1-mini`
-- `gpt-4.1-nano`
-- `gpt-4.5-preview`
-- `gpt-4o-mini`
-- `gpt-4o`
-- `o3-2025-04-16`
-- `o4-mini-2025-04-16`
-- `GigaChat`
-- `GigaChat-2`
-- `GigaChat-Pro`
-- `GigaChat-2-Pro`
-- `GigaChat-Max`
-- `GigaChat-2-Max`
-- `claude-3-5-haiku-latest`
-- `claude-3-7-sonnet-latest`
-- `claude-opus-4-0`
-- `claude-sonnet-4-0`
-- `gemini-2.0-flash-001`
-- `gemini-2.5-flash`
-- `gemini-2.5-pro-preview-06-05`
-- `grok-3-mini`
-- `grok-3`
-- `grok-3-fast`
-- `deepseek-chat`
-- `deepseek-reasoner`
+| Модели                       | Обычный режим | Стриминговый режим | Режим структурированного ответа |
+|------------------------------|---------------|--------------------|---------------------------------|
+| gpt-4.1                      | +             | +                  | +                               |
+| gpt-4.1-mini                 | +             | +                  | +                               |
+| gpt-4.1-nano                 | +             | +                  | +                               |
+| gpt-4.5-preview              | +             | +                  | +                               |
+| gpt-4o-mini                  | +             | +                  | +                               |
+| gpt-4o                       | +             | +                  | +                               |
+| o3-2025-04-16                | +             | +                  | +                               |
+| o4-mini-2025-04-16           | +             | +                  | +                               |
+| GigaChat                     | +             | +                  | +                               |
+| GigaChat-2                   | +             | +                  | +                               |
+| GigaChat-Pro                 | +             | +                  | +                               |
+| GigaChat-2-Pro               | +             | +                  | +                               |
+| GigaChat-Max                 | +             | +                  | +                               |
+| GigaChat-2-Max               | +             | +                  | +                               |
+| claude-3-5-haiku-latest      | +             | +                  | +                               |
+| claude-3-7-sonnet-latest     | +             | +                  | +                               |
+| claude-opus-4-0              | +             | +                  | +                               |
+| claude-sonnet-4-0            | +             | +                  | +                               |
+| gemini-2.0-flash-001         | +             | +                  | +                               |
+| gemini-2.5-flash             | +             | +                  | +                               |
+| gemini-2.5-pro-preview-06-05 | +             | +                  | +                               |
+| grok-3-mini                  | +             | +                  | +                               |
+| grok-3                       | +             | +                  | +                               |
+| grok-3-fast                  | +             | +                  | +                               |
+| deepseek-chat                | +             | +                  | +                               |
+| deepseek-reasoner            | +             | +                  | +                               |

@@ -53,7 +53,7 @@ async def claude() -> None:
 
 
 async def gemini() -> None:
-    llm = await LLMService.create(gemini_2_5_pro.to_dict())  # noqa: F405
+    llm = await LLMService.create(gemini_2_5_flash.to_dict())  # noqa: F405
     structured_llm = await llm.with_structured_output(RelatedConceptListOutput)
     result = await structured_llm.ainvoke(message=SYSTEM_PROMPT)
     print(result)
@@ -83,9 +83,9 @@ async def main() -> None:
     await chatgpt()
     # await gigachat()
     # await claude()
-    # await gemini()  # Проверить
+    # await gemini()
     # await grok()
-    # await deepseek()  # Проверить
+    # await deepseek()
 
 
 if __name__ == '__main__':

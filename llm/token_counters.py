@@ -8,6 +8,8 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_openai import ChatOpenAI
 from langchain_xai import ChatXAI
 
+from llm.tokenizer.deepseek.deepseek import DeepSeekTokenizer
+
 LLMClientInstance = (
     ChatOpenAI
     | GigaChat
@@ -124,6 +126,36 @@ class TokenCounterFactory:
             if not client:
                 raise ValueError('Client not initialized')
 
+            google_api_key = client.google_api_key._secret_value
+
+            url = (
+                'https://generativelanguage.googleapis.com/'
+                'v1beta/models/{model_name}:countTokens'.format(model_name=model_name)
+            )
+
+            headers = {
+                'x-goog-api-key': google_api_key,
+                'Content-Type': 'application/json',
+            }
+
+            text = ' '.join(str(m.content) for m in messages)
+            payload = {
+                'contents': [
+                    {
+                        'parts': [
+                            {
+                                'text': text,
+                            }
+                        ],
+                    },
+                ],
+            }
+
+            async with aiohttp.ClientSession() as session:
+                async with session.post(url, headers=headers, json=payload) as response:
+                    data = await response.json()
+                    return data['totalTokens']
+
             return client.get_num_tokens_from_messages(messages)
 
         return count_tokens
@@ -196,6 +228,8 @@ class TokenCounterFactory:
             if not client:
                 raise ValueError('Client not initialized')
 
-            return client.get_num_tokens_from_messages(messages)
+            tokenizer = DeepSeekTokenizer()
+            text = ' '.join(str(m.content) for m in messages)
+            return tokenizer.count_tokens(text)
 
         return count_tokens
