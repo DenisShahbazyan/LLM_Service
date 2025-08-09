@@ -12,21 +12,15 @@ class PrepareChat:
     Словарь chat_history должен иметь следующую структуру:
     ```
     [
-        {
-            "role": "system" | "user" | "assistant",
-            "content": "..."
-        },
-        {
-            "role": "system" | "user" | "assistant",
-            "content": "..."
-        },
+        {'role': 'system' | 'user' | 'assistant', 'content': '...'},
+        {'role': 'system' | 'user' | 'assistant', 'content': '...'},
     ]
     ```
     или
     ```
     [
-        BaseMessage(content="..."),
-        BaseMessage(content="..."),
+        BaseMessage(content='...'),
+        BaseMessage(content='...'),
     ]
     ```
     где BaseMessage - может быть любым классом из SystemMessage, HumanMessage, AIMessage
@@ -116,7 +110,7 @@ class PrepareChat:
                         case 'assistant':
                             messages.append(AIMessage(content=content))
                         case _:
-                            raise ValueError(f"Неизвестная роль сообщения: {role}")
+                            raise ValueError(f'Неизвестная роль сообщения: {role}')
                 else:
                     raise ValueError(
                         'Элементы chat_history должны быть либо словарями, либо '
