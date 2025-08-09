@@ -72,14 +72,29 @@ class LLMService:
         instance = cls(config, usd_rate)
         return instance
 
+    async def _moderation_check(
+        self,
+        moderation: bool,
+        chat_for_model: list[BaseMessage],
+    ) -> None:
+        if moderation:
+            await self.model_registry.get_moderation(
+                self.config.get('model'),
+                chat_for_model,
+            )
+
     async def ainvoke(
         self,
         chat_history: list[dict[str, str] | BaseMessage] | None = None,
         system_prompt: str | BaseMessage | None = None,
         message: str | BaseMessage | None = None,
+        moderation: bool = True,
         **kwargs,
     ) -> str:
         chat_for_model = PrepareChat(chat_history, system_prompt, message)
+
+        await self._moderation_check(moderation, chat_for_model)
+
         result = await self.__ainvoke(chat_for_model=chat_for_model, **kwargs)
 
         if self._is_structured_output:
@@ -116,9 +131,13 @@ class LLMService:
         chat_history: list[dict[str, str] | BaseMessage] | None = None,
         system_prompt: str | BaseMessage | None = None,
         message: str | BaseMessage | None = None,
+        moderation: bool = True,
         **kwargs,
     ) -> AsyncGenerator[str, None]:
         chat_for_model = PrepareChat(chat_history, system_prompt, message)
+
+        await self._moderation_check(moderation, chat_for_model)
+
         async for chunk in self.__astream(chat_for_model=chat_for_model, **kwargs):
             if hasattr(chunk, 'content') and chunk.content:
                 yield chunk.content

@@ -1,3 +1,4 @@
+import warnings
 from dataclasses import dataclass
 from typing import Any, Callable, Type
 
@@ -10,6 +11,7 @@ from langchain_openai import ChatOpenAI
 from langchain_xai import ChatXAI
 
 from llm.direction import TokenDirection
+from llm.moderations import ModerationPrompt
 from llm.token_counters import TokenCounterFactory
 
 LLMClientInstance = (
@@ -37,6 +39,7 @@ class ModelConfig:
     client_class: LLMClientClass
     token_counter: Callable
     pricing: dict[TokenDirection, float]
+    moderation: Callable | None = None
 
 
 class ModelRegistry:
@@ -62,6 +65,7 @@ class ModelRegistry:
             'gpt-5': ModelConfig(
                 client_class=ChatOpenAI,
                 token_counter=TokenCounterFactory().create_openai_counter(),
+                moderation=ModerationPrompt().openai,
                 pricing={
                     TokenDirection.ENCODE: 1.25 / 1_000_000,
                     TokenDirection.DECODE: 10.00 / 1_000_000,
@@ -70,6 +74,7 @@ class ModelRegistry:
             'gpt-5-mini': ModelConfig(
                 client_class=ChatOpenAI,
                 token_counter=TokenCounterFactory().create_openai_counter(),
+                moderation=ModerationPrompt().openai,
                 pricing={
                     TokenDirection.ENCODE: 0.25 / 1_000_000,
                     TokenDirection.DECODE: 2.00 / 1_000_000,
@@ -78,6 +83,7 @@ class ModelRegistry:
             'gpt-5-nano': ModelConfig(
                 client_class=ChatOpenAI,
                 token_counter=TokenCounterFactory().create_openai_counter(),
+                moderation=ModerationPrompt().openai,
                 pricing={
                     TokenDirection.ENCODE: 0.05 / 1_000_000,
                     TokenDirection.DECODE: 0.40 / 1_000_000,
@@ -86,6 +92,7 @@ class ModelRegistry:
             'gpt-5-chat-latest': ModelConfig(
                 client_class=ChatOpenAI,
                 token_counter=TokenCounterFactory().create_openai_counter(),
+                moderation=ModerationPrompt().openai,
                 pricing={
                     TokenDirection.ENCODE: 1.25 / 1_000_000,
                     TokenDirection.DECODE: 10.00 / 1_000_000,
@@ -94,6 +101,7 @@ class ModelRegistry:
             'gpt-4.1': ModelConfig(
                 client_class=ChatOpenAI,
                 token_counter=TokenCounterFactory().create_openai_counter(),
+                moderation=ModerationPrompt().openai,
                 pricing={
                     TokenDirection.ENCODE: 2.00 / 1_000_000,
                     TokenDirection.DECODE: 8.00 / 1_000_000,
@@ -102,6 +110,7 @@ class ModelRegistry:
             'gpt-4.1-mini': ModelConfig(
                 client_class=ChatOpenAI,
                 token_counter=TokenCounterFactory().create_openai_counter(),
+                moderation=ModerationPrompt().openai,
                 pricing={
                     TokenDirection.ENCODE: 0.40 / 1_000_000,
                     TokenDirection.DECODE: 1.60 / 1_000_000,
@@ -110,6 +119,7 @@ class ModelRegistry:
             'gpt-4.1-nano': ModelConfig(
                 client_class=ChatOpenAI,
                 token_counter=TokenCounterFactory().create_openai_counter(),
+                moderation=ModerationPrompt().openai,
                 pricing={
                     TokenDirection.ENCODE: 0.10 / 1_000_000,
                     TokenDirection.DECODE: 0.40 / 1_000_000,
@@ -118,6 +128,7 @@ class ModelRegistry:
             'gpt-4.5-preview': ModelConfig(
                 client_class=ChatOpenAI,
                 token_counter=TokenCounterFactory().create_openai_counter(),
+                moderation=ModerationPrompt().openai,
                 pricing={
                     TokenDirection.ENCODE: 75.00 / 1_000_000,
                     TokenDirection.DECODE: 150.00 / 1_000_000,
@@ -126,6 +137,7 @@ class ModelRegistry:
             'gpt-4o-mini': ModelConfig(
                 client_class=ChatOpenAI,
                 token_counter=TokenCounterFactory().create_openai_counter(),
+                moderation=ModerationPrompt().openai,
                 pricing={
                     TokenDirection.ENCODE: 0.15 / 1_000_000,
                     TokenDirection.DECODE: 0.60 / 1_000_000,
@@ -134,6 +146,7 @@ class ModelRegistry:
             'gpt-4o': ModelConfig(
                 client_class=ChatOpenAI,
                 token_counter=TokenCounterFactory().create_openai_counter(),
+                moderation=ModerationPrompt().openai,
                 pricing={
                     TokenDirection.ENCODE: 2.50 / 1_000_000,
                     TokenDirection.DECODE: 10.00 / 1_000_000,
@@ -142,6 +155,7 @@ class ModelRegistry:
             'o3-2025-04-16': ModelConfig(
                 client_class=ChatOpenAI,
                 token_counter=TokenCounterFactory().create_openai_counter(),
+                moderation=ModerationPrompt().openai,
                 pricing={
                     TokenDirection.ENCODE: 2.00 / 1_000_000,
                     TokenDirection.DECODE: 8.00 / 1_000_000,
@@ -150,6 +164,7 @@ class ModelRegistry:
             'o4-mini-2025-04-16': ModelConfig(
                 client_class=ChatOpenAI,
                 token_counter=TokenCounterFactory().create_openai_counter(),
+                moderation=ModerationPrompt().openai,
                 pricing={
                     TokenDirection.ENCODE: 1.10 / 1_000_000,
                     TokenDirection.DECODE: 4.40 / 1_000_000,
@@ -329,6 +344,24 @@ class ModelRegistry:
             model_name,
             self.client,
         )
+
+    async def get_moderation(
+        self,
+        model_name: str,
+        messages: list[BaseMessage],
+    ) -> None:
+        """Получает нужную функцию модерации и вызывает ее
+
+        Args:
+            model_name (str): Название модели
+            messages (list[BaseMessage]): Сообщения
+        """
+        if model_name not in self._models:
+            raise ValueError(f'Unknown model: {model_name}')
+        if self._models[model_name].moderation is None:
+            warnings.warn('No moderation for this model')
+            return None
+        return await self._models[model_name].moderation(messages, self.client)
 
     def init_client(self, config: dict[str, Any]) -> LLMClientInstance:
         """Инициализирует клиента LLM
