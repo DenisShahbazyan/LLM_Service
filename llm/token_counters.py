@@ -41,7 +41,10 @@ class TokenCounterFactory:
             Returns:
                 int: Количество токенов
             """
-            encoding = tiktoken.encoding_for_model(model_name)
+            try:
+                encoding = tiktoken.encoding_for_model(model_name)
+            except KeyError:
+                encoding = tiktoken.get_encoding('cl100k_base')
             text = ' '.join(str(m.content) for m in messages)
             return len(encoding.encode(text))
 
@@ -188,7 +191,7 @@ class TokenCounterFactory:
             url = 'https://api.x.ai/v1/tokenize-text'
 
             headers = {
-                'Authorization': f"Bearer {x_api_key}",
+                'Authorization': f'Bearer {x_api_key}',
                 'Content-Type': 'application/json',
             }
 

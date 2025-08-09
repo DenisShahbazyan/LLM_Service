@@ -20,6 +20,10 @@ from example.llm_config import gpt_4_1_nano  # noqa: F401
 from example.llm_config import gpt_4_5_preview  # noqa: F401
 from example.llm_config import gpt_4o  # noqa: F401
 from example.llm_config import gpt_4o_mini  # noqa: F401
+from example.llm_config import gpt_5  # noqa: F401
+from example.llm_config import gpt_5_chat_latest  # noqa: F401
+from example.llm_config import gpt_5_mini  # noqa: F401
+from example.llm_config import gpt_5_nano  # noqa: F401
 from example.llm_config import grok_3  # noqa: F401
 from example.llm_config import grok_3_fast  # noqa: F401
 from example.llm_config import grok_3_mini  # noqa: F401

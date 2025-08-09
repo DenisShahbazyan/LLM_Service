@@ -59,6 +59,38 @@ class ModelRegistry:
     def _init_models(self) -> dict[str, ModelConfig]:
         return {
             # OpenAI
+            'gpt-5': ModelConfig(
+                client_class=ChatOpenAI,
+                token_counter=TokenCounterFactory().create_openai_counter(),
+                pricing={
+                    TokenDirection.ENCODE: 1.25 / 1_000_000,
+                    TokenDirection.DECODE: 10.00 / 1_000_000,
+                },
+            ),
+            'gpt-5-mini': ModelConfig(
+                client_class=ChatOpenAI,
+                token_counter=TokenCounterFactory().create_openai_counter(),
+                pricing={
+                    TokenDirection.ENCODE: 0.25 / 1_000_000,
+                    TokenDirection.DECODE: 2.00 / 1_000_000,
+                },
+            ),
+            'gpt-5-nano': ModelConfig(
+                client_class=ChatOpenAI,
+                token_counter=TokenCounterFactory().create_openai_counter(),
+                pricing={
+                    TokenDirection.ENCODE: 0.05 / 1_000_000,
+                    TokenDirection.DECODE: 0.40 / 1_000_000,
+                },
+            ),
+            'gpt-5-chat-latest': ModelConfig(
+                client_class=ChatOpenAI,
+                token_counter=TokenCounterFactory().create_openai_counter(),
+                pricing={
+                    TokenDirection.ENCODE: 1.25 / 1_000_000,
+                    TokenDirection.DECODE: 10.00 / 1_000_000,
+                },
+            ),
             'gpt-4.1': ModelConfig(
                 client_class=ChatOpenAI,
                 token_counter=TokenCounterFactory().create_openai_counter(),

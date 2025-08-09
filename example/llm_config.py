@@ -1,6 +1,11 @@
 import os
 
+from dotenv import load_dotenv
+
 from llm.constructor import BaseLLM
+
+load_dotenv()
+
 
 CHAT_GPT__KEY = os.getenv('CHAT_GPT__KEY')
 GIGACHAT__KEY = os.getenv('GIGACHAT__KEY')
@@ -8,6 +13,26 @@ ANTHROPIC__KEY = os.getenv('ANTHROPIC__KEY')
 GEMINI_KEY = os.getenv('GEMINI_KEY')
 XAI_KEY = os.getenv('XAI_KEY')
 DEEPSEEK_KEY = os.getenv('DEEPSEEK_KEY')
+
+gpt_5 = BaseLLM(
+    model='gpt-5',
+    api_key=CHAT_GPT__KEY,
+)
+
+gpt_5_mini = BaseLLM(
+    model='gpt-5-mini',
+    api_key=CHAT_GPT__KEY,
+)
+
+gpt_5_nano = BaseLLM(
+    model='gpt-5-nano',
+    api_key=CHAT_GPT__KEY,
+)
+
+gpt_5_chat_latest = BaseLLM(
+    model='gpt-5-chat-latest',
+    api_key=CHAT_GPT__KEY,
+)
 
 gpt_4_1 = BaseLLM(
     model='gpt-4.1',
