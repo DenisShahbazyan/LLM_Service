@@ -2,6 +2,7 @@ import aiohttp
 import tiktoken
 from langchain.schema import BaseMessage
 from langchain_anthropic import ChatAnthropic
+from langchain_cerebras import ChatCerebras
 from langchain_deepseek import ChatDeepSeek
 from langchain_gigachat import GigaChat
 from langchain_google_genai import ChatGoogleGenerativeAI
@@ -17,6 +18,7 @@ LLMClientInstance = (
     | ChatGoogleGenerativeAI
     | ChatXAI
     | ChatDeepSeek
+    | ChatCerebras
 )
 
 
@@ -236,3 +238,9 @@ class TokenCounterFactory:
             return tokenizer.count_tokens(text)
 
         return count_tokens
+
+    @staticmethod
+    def create_cerebas_counter():
+        """Создает функцию счетчика токенов для Cerebas"""
+
+        return TokenCounterFactory.create_openai_counter()

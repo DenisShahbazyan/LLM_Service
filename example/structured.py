@@ -79,13 +79,23 @@ async def deepseek() -> None:
     print(structured_llm.counter.model_registry.usd_rate)
 
 
+async def cerebras() -> None:
+    llm = await LLMService.create(llama_4_maverick_17b_128e_instruct.to_dict())  # noqa: F405
+    structured_llm = await llm.with_structured_output(RelatedConceptListOutput)
+    result = await structured_llm.ainvoke(message=SYSTEM_PROMPT)
+    print(result)
+    print(structured_llm.usage)
+    print(structured_llm.counter.model_registry.usd_rate)
+
+
 async def main() -> None:
-    await chatgpt()
+    # await chatgpt()
     # await gigachat()
     # await claude()
     # await gemini()
     # await grok()
     # await deepseek()
+    await cerebras()
 
 
 if __name__ == '__main__':

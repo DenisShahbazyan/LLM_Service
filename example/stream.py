@@ -46,13 +46,21 @@ async def deepseek() -> None:
         print(chunk, end='', flush=True)
 
 
+async def cerebras() -> None:
+    llm = await LLMService.create(llama_4_maverick_17b_128e_instruct.to_dict())  # noqa: F405
+    result = llm.astream(message='Расскажи теорему Пифагора')
+    async for chunk in result:
+        print(chunk, end='', flush=True)
+
+
 async def main() -> None:
-    await chatgpt()
+    # await chatgpt()
     # await gigachat()
     # await claude()
     # await gemini()
     # await grok()
     # await deepseek()
+    await cerebras()
 
 
 if __name__ == '__main__':

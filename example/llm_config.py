@@ -13,6 +13,7 @@ ANTHROPIC__KEY = os.getenv('ANTHROPIC__KEY')
 GEMINI_KEY = os.getenv('GEMINI_KEY')
 XAI_KEY = os.getenv('XAI_KEY')
 DEEPSEEK_KEY = os.getenv('DEEPSEEK_KEY')
+CEREBAS_KEY = os.getenv('CEREBAS_KEY')
 
 gpt_5 = BaseLLM(
     model='gpt-5',
@@ -180,4 +181,24 @@ deepseek_chat = BaseLLM(
 deepseek_reasoner = BaseLLM(
     model='deepseek-reasoner',
     api_key=DEEPSEEK_KEY,
+)
+
+gpt_oss_120b = BaseLLM(
+    model='gpt-oss-120b',
+    api_key=CEREBAS_KEY,
+)
+
+qwen_3_32b = BaseLLM(
+    model='qwen-3-32b',
+    api_key=CEREBAS_KEY,
+)
+
+llama_4_scout_17b_16e_instruct = BaseLLM(
+    model='llama-4-scout-17b-16e-instruct',
+    api_key=CEREBAS_KEY,
+)
+
+llama_4_maverick_17b_128e_instruct = BaseLLM(
+    model='llama-4-maverick-17b-128e-instruct',
+    api_key=CEREBAS_KEY,
 )

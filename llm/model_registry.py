@@ -4,6 +4,7 @@ from typing import Any, Callable, Type
 
 from langchain.schema import BaseMessage
 from langchain_anthropic import ChatAnthropic
+from langchain_cerebras import ChatCerebras
 from langchain_deepseek import ChatDeepSeek
 from langchain_gigachat import GigaChat
 from langchain_google_genai import ChatGoogleGenerativeAI
@@ -21,6 +22,7 @@ LLMClientInstance = (
     | ChatGoogleGenerativeAI
     | ChatXAI
     | ChatDeepSeek
+    | ChatCerebras
 )
 LLMClientClass = (
     Type[ChatOpenAI]
@@ -29,6 +31,7 @@ LLMClientClass = (
     | Type[ChatGoogleGenerativeAI]
     | Type[ChatXAI]
     | Type[ChatDeepSeek]
+    | Type[ChatCerebras]
 )
 
 
@@ -323,6 +326,39 @@ class ModelRegistry:
                 pricing={
                     TokenDirection.ENCODE: 0.55 / 1_000_000,
                     TokenDirection.DECODE: 2.19 / 1_000_000,
+                },
+            ),
+            # Cerebas
+            'gpt-oss-120b': ModelConfig(
+                client_class=ChatCerebras,
+                token_counter=TokenCounterFactory().create_cerebas_counter(),
+                pricing={
+                    TokenDirection.ENCODE: 0.25 / 1_000_000,
+                    TokenDirection.DECODE: 0.69 / 1_000_000,
+                },
+            ),
+            'qwen-3-32b': ModelConfig(
+                client_class=ChatCerebras,
+                token_counter=TokenCounterFactory().create_cerebas_counter(),
+                pricing={
+                    TokenDirection.ENCODE: 0.40 / 1_000_000,
+                    TokenDirection.DECODE: 0.80 / 1_000_000,
+                },
+            ),
+            'llama-4-scout-17b-16e-instruct': ModelConfig(
+                client_class=ChatCerebras,
+                token_counter=TokenCounterFactory().create_cerebas_counter(),
+                pricing={
+                    TokenDirection.ENCODE: 0.65 / 1_000_000,
+                    TokenDirection.DECODE: 0.85 / 1_000_000,
+                },
+            ),
+            'llama-4-maverick-17b-128e-instruct': ModelConfig(
+                client_class=ChatCerebras,
+                token_counter=TokenCounterFactory().create_cerebas_counter(),
+                pricing={
+                    TokenDirection.ENCODE: 0.20 / 1_000_000,
+                    TokenDirection.DECODE: 0.60 / 1_000_000,
                 },
             ),
         }

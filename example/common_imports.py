@@ -25,9 +25,13 @@ from example.llm_config import (
     gpt_5_chat_latest,  # noqa: F401
     gpt_5_mini,  # noqa: F401
     gpt_5_nano,  # noqa: F401
+    gpt_oss_120b,  # noqa: F401
     grok_3,  # noqa: F401
     grok_3_fast,  # noqa: F401
     grok_3_mini,  # noqa: F401
+    llama_4_maverick_17b_128e_instruct,  # noqa: F401
+    llama_4_scout_17b_16e_instruct,  # noqa: F401
     o3_2025_04_16,  # noqa: F401
     o4_mini_2025_04_16,  # noqa: F401
+    qwen_3_32b,  # noqa: F401
 )
