@@ -83,6 +83,9 @@ class LLMService:
                 chat_for_model,
             )
 
+    async def test_connection(self) -> bool | None:
+        return await self.model_registry.get_test_connections(self.config.get('model'))
+
     async def ainvoke(
         self,
         chat_history: list[dict[str, str] | BaseMessage] | None = None,
