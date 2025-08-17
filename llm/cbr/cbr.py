@@ -4,7 +4,6 @@ from typing import Optional, Self
 from xml.etree import ElementTree
 
 import aiohttp
-from aiohttp import ClientResponse, ClientTimeout
 
 
 class CBRRate:
@@ -12,7 +11,6 @@ class CBRRate:
     USD_CURRENCY_ID = 'R01235'
     CBR_DAILY_RATE_URL = 'https://www.cbr.ru/scripts/XML_daily.asp'
     RATE_REFRESH_BUFFER = 60 * 10
-    TIMEOUT = 10
 
     def __new__(cls) -> Self:
         if cls._instance is None:
@@ -37,7 +35,7 @@ class CBRRate:
             or current_time >= self.cached_time + self.RATE_REFRESH_BUFFER
         )
 
-    async def process_response(self, response: ClientResponse) -> float | None:
+    async def process_response(self, response: aiohttp.ClientResponse) -> float | None:
         if response.status == HTTPStatus.OK:
             content = await response.text()
             root = ElementTree.fromstring(content)
@@ -48,10 +46,24 @@ class CBRRate:
         return None
 
     async def _fetch_usd_rate(self) -> float | None:
-        async with aiohttp.ClientSession() as session:
+        timeout = aiohttp.ClientTimeout(
+            total=60,
+            connect=10,
+            sock_read=30,
+        )
+        connector = aiohttp.TCPConnector(
+            limit=100,
+            limit_per_host=30,
+            keepalive_timeout=30,
+            enable_cleanup_closed=True,
+            force_close=False,
+        )
+        async with aiohttp.ClientSession(
+            timeout=timeout,
+            connector=connector,
+        ) as session:
             async with session.get(
                 url=self.CBR_DAILY_RATE_URL,
-                timeout=ClientTimeout(total=self.TIMEOUT),
                 ssl=False,
             ) as response:
                 return await self.process_response(response)
