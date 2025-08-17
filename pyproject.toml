@@ -75,7 +75,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "universal-llm-service"
-version = "1.0.13"
+version = "1.0.14"
 authors = [{ name = "Денис Шахбазян", email = "otbephncb@gmail.com" }]
 description = "Библиотека для работы с языковыми моделями"
 readme = "README.md"
