@@ -91,7 +91,7 @@ class LLMService:
         chat_history: list[dict[str, str] | BaseMessage] | None = None,
         system_prompt: str | BaseMessage | None = None,
         message: str | BaseMessage | None = None,
-        moderation: bool = True,
+        moderation: bool = False,
         **kwargs,
     ) -> str:
         chat_for_model = PrepareChat(chat_history, system_prompt, message)
@@ -134,7 +134,7 @@ class LLMService:
         chat_history: list[dict[str, str] | BaseMessage] | None = None,
         system_prompt: str | BaseMessage | None = None,
         message: str | BaseMessage | None = None,
-        moderation: bool = True,
+        moderation: bool = False,
         **kwargs,
     ) -> AsyncGenerator[str, None]:
         chat_for_model = PrepareChat(chat_history, system_prompt, message)

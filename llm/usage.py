@@ -32,3 +32,13 @@ class TokenUsage:
     @property
     def last_spendings(self):
         return self.last_input_spendings + self.last_output_spendings
+
+    def clear(self):
+        self.all_input_tokens: int = 0
+        self.all_output_tokens: int = 0
+        self.last_input_tokens: int = 0
+        self.last_output_tokens: int = 0
+        self.all_input_spendings: float = 0
+        self.all_output_spendings: float = 0
+        self.last_input_spendings: float = 0
+        self.last_output_spendings: float = 0
