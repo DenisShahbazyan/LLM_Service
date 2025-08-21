@@ -2322,7 +2322,7 @@ wheels = [
 
 [[package]]
 name = "universal-llm-service"
-version = "1.0.15"
+version = "1.0.16"
 source = { editable = "." }
 dependencies = [
     { name = "aiohttp" },

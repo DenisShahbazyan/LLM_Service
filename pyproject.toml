@@ -75,7 +75,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "universal-llm-service"
-version = "1.0.15"
+version = "1.0.16"
 authors = [{ name = "Денис Шахбазян", email = "otbephncb@gmail.com" }]
 description = "Библиотека для работы с языковыми моделями"
 readme = "README.md"
@@ -118,3 +118,6 @@ dev = [
 
 [tool.hatch.build.targets.wheel]
 packages = ["llm"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"llm/tokenizer/deepseek/tokenizer.json" = "llm/tokenizer/deepseek/tokenizer.json"

@@ -1,8 +1,16 @@
+import importlib.resources
+
 from tokenizers import Tokenizer
 
 
 class DeepSeekTokenizer:
-    def __init__(self, tokenizer_path='llm/tokenizer/deepseek/tokenizer.json'):
+    def __init__(self, tokenizer_path=None):
+        if tokenizer_path is None:
+            with importlib.resources.path(
+                package='llm.tokenizer.deepseek',
+                resource='tokenizer.json',
+            ) as path:
+                tokenizer_path = str(path)
         self.tokenizer = Tokenizer.from_file(tokenizer_path)
 
     def count_tokens(self, text):
