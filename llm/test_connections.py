@@ -2,23 +2,8 @@ from http import HTTPStatus
 from urllib.parse import urljoin
 
 import aiohttp
-from langchain_anthropic import ChatAnthropic
-from langchain_cerebras import ChatCerebras
-from langchain_deepseek import ChatDeepSeek
-from langchain_gigachat import GigaChat
-from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_openai import ChatOpenAI
-from langchain_xai import ChatXAI
 
-LLMClientInstance = (
-    ChatOpenAI
-    | GigaChat
-    | ChatAnthropic
-    | ChatGoogleGenerativeAI
-    | ChatXAI
-    | ChatDeepSeek
-    | ChatCerebras
-)
+from llm.types import LLMClientInstance
 
 
 # TODO: Выполнять запросы самостоятельно, или использовать нативные библиотеки?

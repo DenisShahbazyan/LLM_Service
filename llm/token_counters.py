@@ -1,25 +1,9 @@
 import aiohttp
 import tiktoken
 from langchain.schema import BaseMessage
-from langchain_anthropic import ChatAnthropic
-from langchain_cerebras import ChatCerebras
-from langchain_deepseek import ChatDeepSeek
-from langchain_gigachat import GigaChat
-from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_openai import ChatOpenAI
-from langchain_xai import ChatXAI
 
 from llm.tokenizer.deepseek.deepseek import DeepSeekTokenizer
-
-LLMClientInstance = (
-    ChatOpenAI
-    | GigaChat
-    | ChatAnthropic
-    | ChatGoogleGenerativeAI
-    | ChatXAI
-    | ChatDeepSeek
-    | ChatCerebras
-)
+from llm.types import LLMClientInstance
 
 
 class TokenCounterFactory:

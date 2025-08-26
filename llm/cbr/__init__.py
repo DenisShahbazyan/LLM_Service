@@ -1,5 +1,3 @@
 from .cbr import CBRRate
 
-__all__ = [
-    'CBRRate',
-]
+__all__ = ('CBRRate',)

@@ -9,6 +9,7 @@ from llm.cbr.cbr import CBRRate
 from llm.counter import TokenCounter
 from llm.model_registry import ModelRegistry
 from llm.prepare_chat import PrepareChat
+from llm.types import LLMClientInstance
 from llm.usage import TokenUsage
 
 
@@ -47,9 +48,9 @@ class LLMService:
 
     def __init__(self, config: dict, usd_rate: float = None) -> None:
         self.config = config
-        self.model_registry = ModelRegistry(usd_rate)
+        self.model_registry = ModelRegistry(usd_rate, config)
 
-        self.client = self.model_registry.init_client(config)
+        self.client: LLMClientInstance = self.model_registry.init_client()
         self.usage = TokenUsage()
         self._is_structured_output = False
 

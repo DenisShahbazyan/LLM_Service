@@ -1,8 +1,7 @@
 from langchain.schema import BaseMessage
-from langchain_openai import ChatOpenAI
 from openai import AsyncOpenAI
 
-LLMClientInstance = ChatOpenAI
+from llm.types import LLMClientInstance
 
 
 class ModerationError(Exception):
