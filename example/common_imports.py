@@ -33,5 +33,6 @@ from example.llm_config import (
     llama_4_scout_17b_16e_instruct,  # noqa: F401
     o3_2025_04_16,  # noqa: F401
     o4_mini_2025_04_16,  # noqa: F401
+    openrouter,  # noqa: F401
     qwen_3_32b,  # noqa: F401
 )

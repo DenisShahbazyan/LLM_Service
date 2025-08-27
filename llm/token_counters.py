@@ -228,3 +228,9 @@ class TokenCounterFactory:
         """Создает функцию счетчика токенов для Cerebas"""
 
         return TokenCounterFactory.create_openai_counter()
+
+    @staticmethod
+    def create_openrouter_counter():
+        """Создает функцию счетчика токенов для OpenRouter"""
+
+        return TokenCounterFactory.create_openai_counter()

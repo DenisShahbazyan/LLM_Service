@@ -118,3 +118,7 @@ class TestConnections:
         headers = {'Authorization': f'Bearer {api_key}'}
 
         return await TestConnections()._send_request(full_url, headers)
+
+    @staticmethod
+    async def openrouter(client: LLMClientInstance | None = None) -> bool:
+        return await TestConnections().openai(client)

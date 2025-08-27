@@ -6,6 +6,7 @@ from .deepseek import DeepSeekProvider
 from .gigachat import GigaChatProvider
 from .google import GoogleProvider
 from .openai import OpenAIProvider
+from .openrouter import OpenRouterProvider
 from .xai import XAIProvider
 
 __all__ = (
@@ -18,4 +19,5 @@ __all__ = (
     'XAIProvider',
     'DeepSeekProvider',
     'CerebrasProvider',
+    'OpenRouterProvider',
 )

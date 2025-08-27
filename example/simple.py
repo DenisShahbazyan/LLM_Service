@@ -5,7 +5,7 @@ from llm.service import LLMService
 
 
 async def test() -> None:
-    llm = await LLMService.create(claude_3_5_haiku.to_dict())  # noqa: F405
+    llm = await LLMService.create(openrouter.to_dict())  # noqa: F405
     result = await llm.ainvoke(message='Сколько будет 2 + 2?')
     print(result)
     print(llm.usage)

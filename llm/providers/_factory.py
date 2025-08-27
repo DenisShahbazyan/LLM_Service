@@ -5,6 +5,7 @@ from llm.providers.deepseek import DeepSeekProvider
 from llm.providers.gigachat import GigaChatProvider
 from llm.providers.google import GoogleProvider
 from llm.providers.openai import OpenAIProvider
+from llm.providers.openrouter import OpenRouterProvider
 from llm.providers.xai import XAIProvider
 
 
@@ -17,6 +18,7 @@ class ProviderFactory:
         XAIProvider,
         DeepSeekProvider,
         CerebrasProvider,
+        OpenRouterProvider,
     ]
 
     def __init__(self, usd_rate: float, model_name: str) -> None:
