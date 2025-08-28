@@ -5,6 +5,8 @@
 [![Python Versions](https://img.shields.io/pypi/pyversions/universal-llm-service.svg)](https://pypi.org/project/universal-llm-service/)
 [![License](https://img.shields.io/pypi/l/universal-llm-service.svg)](https://github.com/DenisShahbazyan/LLM_Service/blob/master/LICENSE)
 
+(Актуальный README в github, обычно я забываю его обновить при релизе...)
+
 # Библиотека для упрощенного использования LLM
 
 Библиотека предоставляет упрощенный интерфейс для работы с различными LLM моделями, автоматический подсчет токенов и стоимости запросов, а также удобную интеграцию с существующими проектами. Создана на основе Langchain, являясь практичной оберткой для стандартизации взаимодействия с моделями.
@@ -15,10 +17,19 @@
 - Поддержка асинхронного API
 - Мониторинг использования токенов
 - Расчет затрат в USD с учетом текущего курса валюты по ЦБ РФ
+- Тест соединения (работает так: пытается получить список моделей, если получает - возвращает True)
+- Премодерация промпта (пока такую возможность дает только openai)
 
 ## Установка:
 ```sh
+# Через uv
+uv add universal-llm-service
+
+# Через pip
 pip install universal-llm-service
+
+# Через poetry
+poetry add universal-llm-service
 ```
 
 ## Использование:
@@ -28,7 +39,7 @@ pip install universal-llm-service
 ```py
 from langchain_openai import ChatOpenAI
 
-llm = ChatOpenAI(
+gpt_4o_mini = ChatOpenAI(
     model='gpt-4o-mini',
     api_key='sk-proj-1234567890',
     temperature=0,
@@ -39,7 +50,7 @@ llm = ChatOpenAI(
 ```py
 from llm.constructor import BaseLLM
 
-llm = BaseLLM(
+gpt_4o_mini = BaseLLM(
     model='gpt-4o-mini',
     api_key='sk-proj-1234567890',
     temperature=0,
@@ -61,12 +72,15 @@ from llm_config import gpt_4o_mini
 async def main():
     llm = await LLMService.create(gpt_4o_mini.to_dict())
     result = await llm.ainvoke(message='Сколько будет 2 + 2?')
+    print(result)  # Ответ от llm
+    print(llm.usage)  # Использование в токенах и деньгах
+    print(llm.usd_rate)  # Курс доллара
+    print(llm.chat_json)  # Весь чат в json
 
 
 if __name__ == "__main__":
     asyncio.run(main())
 ```
-- `result` - ответ модели (строка)
 
 ### Структурированный вывод:
 ```py
@@ -101,12 +115,15 @@ async def main() -> None:
     llm = await LLMService.create(gpt_4o_mini.to_dict())
     structured_llm = await llm.with_structured_output(RelatedConceptListOutput)
     result = await structured_llm.ainvoke(message=SYSTEM_PROMPT)
+    print(result)  # Ответ от llm
+    print(structured_llm.usage)  # Использование в токенах и деньгах
+    print(structured_llm.usd_rate)  # Курс доллара
+    print(structured_llm.chat_json)  # Весь чат в json (тут не работает)
 
 
 if __name__ == '__main__':
     asyncio.run(main())
 ```
-- `result` - ответ модели (запрошенная Pydantic схема)
 
 ### Потоковый вывод:
 ```py
@@ -119,28 +136,14 @@ from llm.service import LLMService
 
 async def main() -> None:
     llm = await LLMService.create(gpt_4o_mini.to_dict())
-    result = llm.astream(message='Расскажи теорему Пифагора')
-    async for chunk in result:
+    stream = await llm.astream(message='Кратко расскажи что такое Python')
+    async for chunk in stream:
         print(chunk, end='', flush=True)
-
-
-if __name__ == '__main__':
-    asyncio.run(main())
-```
-
-### Потоковый вывод с использованием контекстного менеджера:
-```py
-import asyncio
-
-from example.llm_config import gpt_4o_mini  # noqa: F401
-from llm.service import LLMService
-
-
-async def main() -> None:
-    llm = await LLMService.create(gpt_4o_mini.to_dict())
-    async with llm.astream_mgr(message='Расскажи теорему Пифагора') as stream:
-        async for chunk in stream:
-            print(chunk, end='', flush=True)
+    print('\n\n')
+    print(stream.full_text)  # Полный текст стрима
+    print(llm.usage)  # Использование в токенах и деньгах
+    print(llm.usd_rate)  # Курс доллара
+    print(llm.chat_json)  # Весь чат в json
 
 
 if __name__ == '__main__':
@@ -148,9 +151,7 @@ if __name__ == '__main__':
 ```
 
 ## Подробнее о возможностях:
-- `get_llm_config` - получает конфиг для LLM модели, можно увидеть в примерах, имена полей должны совпадать с именами полей при инициализации моделей для Langchain.
-
-- `llm.ainvoke` - метод принимает как отдельно системный промпт или сообщение, так и историю полность. Параметры принимаются как в стиле langchain так и в виде словарей. Перед отправкой любого сообщения в LLM отрабатывает класс подготовки контекста - PrepareChat:
+- `llm.ainvoke` и `llm.stream` - методы принимают как отдельно системный промпт или сообщение, так и историю полность. Параметры принимаются как в стиле langchain так и в виде словарей. Перед отправкой любого сообщения в LLM отрабатывает класс подготовки контекста - PrepareChat:
 Класс для подготовки чата в формате Langchain для модели.
 
 1. Данный класс всегда отдает список сообщений в формате Langchain.
@@ -173,12 +174,12 @@ if __name__ == '__main__':
 
 ---
 
-- `llm.counter.model_registry.usd_rate` - курс валюты в USD.
+- `llm.usd_rate` - курс валюты в USD.
 
 ## Запуск локально (для разработки):
 Установка зависимостей
 ```sh
-pip install -r requirements.txt
+uv sync
 ```
 
 Создать файл `.env` на основе шаблона `.env.template` и вписать ключи
@@ -188,14 +189,10 @@ pip install -r requirements.txt
 python -m example.simple  # Пример обычного общения с LLM
 python -m example.structured  # Пример общения с LLM со структурированным выводом
 python -m example.stream  # Пример общения с LLM в режиме стрима
-python -m example.stream_mgr  # Пример общения с LLM в режиме стрима через контекстный менеджер
 ```
 
-## TODO:
-- Добавить популярные модели для использования
-- Добавить подсчет токенов для стримминговой передачи
-
 # Список поддерживаемых моделей:
+Все модели OpenRouter
 | Модели                             | Обычный режим | Стриминговый режим           | Режим структурированного ответа |
 |------------------------------------|---------------|------------------------------|---------------------------------|
 | gpt-5                              | +             | Verified org only            | +                               |
