@@ -59,21 +59,22 @@ class StreamBillingDecorator:
     ) -> None:
         self.func = func
         self.counter = counter
+        self.full_output_text = ''
 
     def __get__(self, instance, owner):
         return lambda *args, **kwargs: self(instance, *args, **kwargs)
 
     async def __call__(self, *args, **kwargs) -> AsyncGenerator[BaseMessageChunk, None]:
-        full_output_text = ''
+        self.full_output_text = ''
 
         stream = self.func(*args, **kwargs)
         async for chunk in stream:
-            full_output_text += chunk.content
+            self.full_output_text += chunk.content
             yield chunk
 
         await self.counter.count_input_tokens_from_text(
             kwargs.get('input'),
         )
         await self.counter.count_output_tokens_from_text(
-            [AIMessage(content=full_output_text)],
+            [AIMessage(content=self.full_output_text)],
         )

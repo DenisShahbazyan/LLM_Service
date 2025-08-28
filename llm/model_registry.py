@@ -13,11 +13,11 @@ class ModelRegistry:
         self.client: LLMClientInstance | None = None
         self.config = config
         self.usd_rate = usd_rate
-        self._factory = ProviderFactory(usd_rate, config.get('model'))
+        self.__factory = ProviderFactory(usd_rate, config.get('model'))
 
     def get_model_config(self, model_name: str):
         """Получает конфигурацию модели"""
-        return self._factory.get_model_config(model_name)
+        return self.__factory.get_model_config(model_name)
 
     async def get_tokens(self, model_name: str, messages: list[BaseMessage]) -> int:
         """Получает нужную функцию счетчика токенов и вызывает ее

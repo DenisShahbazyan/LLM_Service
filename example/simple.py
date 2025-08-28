@@ -9,7 +9,8 @@ async def test() -> None:
     result = await llm.ainvoke(message='Сколько будет 2 + 2?')
     print(result)
     print(llm.usage)
-    print(llm.counter.model_registry.usd_rate)
+    print(llm.usd_rate)
+    print(llm.chat_json)
 
 
 async def main() -> None:

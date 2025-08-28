@@ -1,6 +1,7 @@
+import json
 from typing import Any, AsyncGenerator, Literal, Self
 
-from langchain.schema import BaseMessage
+from langchain.schema import AIMessage, BaseMessage
 
 from llm.billing import BillingDecorator, StreamBillingDecorator
 from llm.cbr.cbr import CBRRate
@@ -12,9 +13,9 @@ from llm.usage import TokenUsage
 
 
 class StreamResult:
-    def __init__(self, generator: AsyncGenerator[str, None]):
+    def __init__(self, generator: AsyncGenerator[str, None], billing_stream=None):
         self._generator = generator
-        self._full_text = ''
+        self._billing_stream = billing_stream
         self._completed = False
 
     def __aiter__(self):
@@ -23,7 +24,6 @@ class StreamResult:
     async def __anext__(self):
         try:
             chunk = await self._generator.__anext__()
-            self._full_text += chunk
             return chunk
         except StopAsyncIteration:
             self._completed = True
@@ -32,7 +32,9 @@ class StreamResult:
     @property
     def full_text(self) -> str:
         """Возвращает полный текст. Доступен только после завершения итерации."""
-        return self._full_text
+        if self._billing_stream:
+            return self._billing_stream.full_output_text
+        return ''
 
     @property
     def is_completed(self) -> bool:
@@ -40,9 +42,14 @@ class StreamResult:
         return self._completed
 
 
+# TODO: Проверить что в структурный ответ принимается не только Pydantic схемы
+# TODO: Исправить передачу аргументов в оригинальный структурный ответ, передавать
+# только те, которые были явно заданы пользователем.
+# TODO: Сделать чтоб chat_json работал и для структурного ответа
 class LLMService:
     def __init__(self, config: dict, usd_rate: float = None) -> None:
         self.config = config
+        self.usd_rate = usd_rate
 
         self.model_registry = ModelRegistry(usd_rate, config)
         self.client: LLMClientInstance = self.model_registry.init_client()
@@ -55,6 +62,9 @@ class LLMService:
         )
 
         self.__is_structured_output = False
+
+        self.__chat_history: list[BaseMessage] = []
+        self.__last_response: AIMessage | None = None
 
     @classmethod
     async def create(cls, config: dict) -> Self:
@@ -77,6 +87,35 @@ class LLMService:
                 chat_for_model,
             )
 
+    def _save_chat_history(
+        self, chat_for_model: list[BaseMessage], answer: AIMessage
+    ) -> None:
+        """Сохраняет историю чата и ответ модели."""
+        self.__chat_history = chat_for_model.copy()
+        self.__last_response = answer
+
+    @property
+    def chat_json(self) -> str | None:
+        """Возвращает историю чата в JSON формате."""
+        if not self.__chat_history or not self.__last_response:
+            return None
+
+        result = []
+        for message in self.__chat_history:
+            result.append(
+                {
+                    'type': message.type,
+                    'content': message.content,
+                },
+            )
+        result.append(
+            {
+                'type': self.__last_response.type,
+                'content': self.__last_response.content,
+            },
+        )
+        return json.dumps(result, ensure_ascii=False)
+
     async def test_connection(self) -> bool | None:
         return await self.model_registry.get_test_connections(self.config.get('model'))
 
@@ -98,6 +137,7 @@ class LLMService:
         if self.__is_structured_output:
             return result
 
+        self._save_chat_history(chat_for_model, result)
         return result.content
 
     async def with_structured_output(
@@ -138,4 +178,7 @@ class LLMService:
             async for chunk in stream:
                 yield chunk.content
 
-        return StreamResult(content_generator())
+            ai_message = AIMessage(content=billing_stream.full_output_text)
+            self._save_chat_history(chat_for_model, ai_message)
+
+        return StreamResult(content_generator(), billing_stream)

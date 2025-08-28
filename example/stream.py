@@ -10,8 +10,10 @@ async def test() -> None:
     async for chunk in stream:
         print(chunk, end='', flush=True)
 
-    print(f'\n\nДлина текста: {len(stream.full_text)} символов')
-    print(f'Usage после стрима: {llm.usage}')
+    print('\n\n')
+    print(len(stream.full_text))
+    print(llm.usage)
+    print(llm.chat_json)
 
 
 async def main() -> None:

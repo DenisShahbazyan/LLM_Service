@@ -31,7 +31,8 @@ async def test() -> None:
     result = await structured_llm.ainvoke(message=SYSTEM_PROMPT)
     print(result)
     print(structured_llm.usage)
-    print(structured_llm.counter.model_registry.usd_rate)
+    print(structured_llm.usd_rate)
+    print(structured_llm.chat_json)
 
 
 async def main() -> None:
