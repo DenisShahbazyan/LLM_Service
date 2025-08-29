@@ -75,7 +75,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "universal-llm-service"
-version = "1.0.22"
+version = "1.0.23"
 authors = [{ name = "Денис Шахбазян", email = "otbephncb@gmail.com" }]
 description = "Библиотека для работы с языковыми моделями"
 readme = "README.md"
@@ -106,9 +106,10 @@ dev = [
 anthropic = ["langchain-anthropic>=0.3.19"]
 cerebras = ["langchain-cerebras>=0.5.0"]
 deepseek = ["langchain-deepseek>=0.1.4", "tokenizers>=0.22.0"]
-gemini = ["langchain-google-genai>=2.1.10"]
 gigachat = ["langchain-gigachat>=0.3.12"]
+gemini = ["langchain-google-genai>=2.1.10"]
 openai = ["langchain-openai>=0.3.32", "tiktoken>=0.11.0"]
+openrouter = ["langchain-openai>=0.3.32", "tiktoken>=0.11.0"]
 xai = ["langchain-xai>=0.2.5"]
 all = [
     "langchain-anthropic>=0.3.19",
