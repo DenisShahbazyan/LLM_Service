@@ -44,6 +44,7 @@ class StreamResult:
 # TODO: Исправить подсчет токенов для with_structured_output. Сейчас токены считаются
 # просто из выходного текста, а нужно считать по тому, что было вызвано в модели
 # (function или tool или что-то еще)
+# TODO: Добавить возможность использования всех моделей провайдера, или кастомных
 class LLMService:
     def __init__(self, config: dict, usd_rate: float = None) -> None:
         self.config = config

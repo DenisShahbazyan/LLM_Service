@@ -118,7 +118,7 @@ async def main() -> None:
     print(result)  # Ответ от llm
     print(structured_llm.usage)  # Использование в токенах и деньгах
     print(structured_llm.usd_rate)  # Курс доллара
-    print(structured_llm.chat_json)  # Весь чат в json (тут не работает)
+    print(structured_llm.chat_json)  # Весь чат в json
 
 
 if __name__ == '__main__':
