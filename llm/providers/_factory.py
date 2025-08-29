@@ -1,29 +1,42 @@
+import importlib
+import inspect
+
 from llm.providers._base import BaseProvider, ModelConfig
-from llm.providers.anthropic import AnthropicProvider
-from llm.providers.cerebras import CerebrasProvider
-from llm.providers.deepseek import DeepSeekProvider
-from llm.providers.gigachat import GigaChatProvider
-from llm.providers.google import GoogleProvider
-from llm.providers.openai import OpenAIProvider
-from llm.providers.openrouter import OpenRouterProvider
-from llm.providers.xai import XAIProvider
 
 
 class ProviderFactory:
-    _provider_classes = [
-        OpenAIProvider,
-        GigaChatProvider,
-        AnthropicProvider,
-        GoogleProvider,
-        XAIProvider,
-        DeepSeekProvider,
-        CerebrasProvider,
-        OpenRouterProvider,
-    ]
-
     def __init__(self, usd_rate: float, model_name: str) -> None:
         self.usd_rate = usd_rate
+        self._provider_classes = self._get_available_providers()
         self._provider: BaseProvider = self._init_provider(model_name)
+
+    def _get_available_providers(self) -> list[type[BaseProvider]]:
+        """Получает список доступных классов провайдеров из __init__.py
+
+        Returns:
+            list[type[BaseProvider]]: Список классов провайдеров
+        """
+        provider_classes = []
+
+        try:
+            providers_module = importlib.import_module('llm.providers')
+
+            exported_names = getattr(providers_module, '__all__', [])
+
+            for name in exported_names:
+                obj = getattr(providers_module, name, None)
+                if (
+                    obj
+                    and inspect.isclass(obj)
+                    and issubclass(obj, BaseProvider)
+                    and obj != BaseProvider
+                ):
+                    provider_classes.append(obj)
+
+        except ImportError:
+            pass
+
+        return provider_classes
 
     def _init_provider(self, model_name: str) -> BaseProvider:
         """Инициализирует провайдер для модели
@@ -37,10 +50,13 @@ class ProviderFactory:
         for provider_class in self._provider_classes:
             provider: BaseProvider = provider_class(self.usd_rate)
             if provider.has_model(model_name):
-                self._provider = provider
                 return provider
 
-        raise ValueError(f'Model {model_name} not found in any provider')
+        available_providers = [cls.__name__ for cls in self._provider_classes]
+        raise ValueError(
+            f'Model {model_name} not found in any available provider. '
+            f'Available providers: {available_providers}'
+        )
 
     def get_model_config(self, model_name: str) -> ModelConfig:
         """Получает конфигурацию модели

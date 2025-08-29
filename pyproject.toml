@@ -75,16 +75,16 @@ build-backend = "hatchling.build"
 
 [project]
 name = "universal-llm-service"
-version = "1.0.19"
+version = "1.0.20"
 authors = [{ name = "Денис Шахбазян", email = "otbephncb@gmail.com" }]
 description = "Библиотека для работы с языковыми моделями"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 classifiers = [
     "Development Status :: 4 - Beta",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "License :: OSI Approved :: MIT License",
 ]
 dependencies = [
@@ -106,15 +106,20 @@ dependencies = [
 "Bug Tracker" = "https://github.com/DenisShahbazyan/LLM_Service/issues"
 
 [dependency-groups]
+anthropic = ["langchain-anthropic>=0.3.19"]
+cerebras = ["langchain-cerebras>=0.5.0"]
+deepseek = ["langchain-deepseek>=0.1.4", "tokenizers>=0.22.0"]
 dev = [
-    "black>=25.1.0",
     "build>=1.2.2.post1",
-    "flake8>=7.3.0",
-    "flake8-pyproject>=1.2.3",
     "pre-commit>=4.2.0",
     "python-dotenv>=1.1.1",
+    "ruff>=0.12.11",
     "twine>=6.1.0",
 ]
+gemini = ["langchain-google-genai>=2.1.10"]
+gigachat = ["langchain-gigachat>=0.3.12"]
+openai = ["langchain-openai>=0.3.32", "tiktoken>=0.11.0"]
+xai = ["langchain-xai>=0.2.5"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["llm"]

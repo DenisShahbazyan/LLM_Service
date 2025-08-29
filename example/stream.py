@@ -5,7 +5,7 @@ from llm.service import LLMService
 
 
 async def test() -> None:
-    llm = await LLMService.create(gpt_4o_mini.to_dict())  # noqa: F405
+    llm = await LLMService.create(grok_3_mini.to_dict())  # noqa: F405
     stream = await llm.astream(message='Кратко расскажи что такое Python')
     async for chunk in stream:
         print(chunk, end='', flush=True)

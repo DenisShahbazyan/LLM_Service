@@ -1,8 +1,6 @@
 import aiohttp
-import tiktoken
 from langchain.schema import BaseMessage
 
-from llm.tokenizer.deepseek.deepseek import DeepSeekTokenizer
 from llm.types import LLMClientInstance
 
 
@@ -27,6 +25,8 @@ class TokenCounterFactory:
             Returns:
                 int: Количество токенов
             """
+            import tiktoken
+
             try:
                 encoding = tiktoken.encoding_for_model(model_name)
             except KeyError:
@@ -216,6 +216,8 @@ class TokenCounterFactory:
             """
             if not client:
                 raise ValueError('Client not initialized')
+
+            from llm.tokenizer.deepseek.deepseek import DeepSeekTokenizer
 
             tokenizer = DeepSeekTokenizer()
             text = ' '.join(str(m.content) for m in messages)
