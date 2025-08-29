@@ -1961,11 +1961,15 @@ wheels = [
 
 [[package]]
 name = "universal-llm-service"
-version = "1.0.20"
+version = "1.0.22"
 source = { editable = "." }
 dependencies = [
     { name = "aiohttp" },
     { name = "langchain" },
+]
+
+[package.optional-dependencies]
+all = [
     { name = "langchain-anthropic" },
     { name = "langchain-cerebras" },
     { name = "langchain-deepseek" },
@@ -1976,8 +1980,6 @@ dependencies = [
     { name = "tiktoken" },
     { name = "tokenizers" },
 ]
-
-[package.dev-dependencies]
 anthropic = [
     { name = "langchain-anthropic" },
 ]
@@ -1987,13 +1989,6 @@ cerebras = [
 deepseek = [
     { name = "langchain-deepseek" },
     { name = "tokenizers" },
-]
-dev = [
-    { name = "build" },
-    { name = "pre-commit" },
-    { name = "python-dotenv" },
-    { name = "ruff" },
-    { name = "twine" },
 ]
 gemini = [
     { name = "langchain-google-genai" },
@@ -2009,28 +2004,41 @@ xai = [
     { name = "langchain-xai" },
 ]
 
+[package.dev-dependencies]
+dev = [
+    { name = "build" },
+    { name = "pre-commit" },
+    { name = "python-dotenv" },
+    { name = "ruff" },
+    { name = "twine" },
+]
+
 [package.metadata]
 requires-dist = [
     { name = "aiohttp", specifier = ">=3.12.14" },
     { name = "langchain", specifier = ">=0.3.26" },
-    { name = "langchain-anthropic", specifier = ">=0.3.17" },
-    { name = "langchain-cerebras", specifier = ">=0.5.0" },
-    { name = "langchain-deepseek", specifier = ">=0.1.3" },
-    { name = "langchain-gigachat", specifier = ">=0.3.11" },
-    { name = "langchain-google-genai", specifier = ">=2.1.7" },
-    { name = "langchain-openai", specifier = ">=0.3.27" },
-    { name = "langchain-xai", specifier = ">=0.2.4" },
-    { name = "tiktoken", specifier = ">=0.9.0" },
-    { name = "tokenizers", specifier = ">=0.21.2" },
+    { name = "langchain-anthropic", marker = "extra == 'all'", specifier = ">=0.3.19" },
+    { name = "langchain-anthropic", marker = "extra == 'anthropic'", specifier = ">=0.3.19" },
+    { name = "langchain-cerebras", marker = "extra == 'all'", specifier = ">=0.5.0" },
+    { name = "langchain-cerebras", marker = "extra == 'cerebras'", specifier = ">=0.5.0" },
+    { name = "langchain-deepseek", marker = "extra == 'all'", specifier = ">=0.1.4" },
+    { name = "langchain-deepseek", marker = "extra == 'deepseek'", specifier = ">=0.1.4" },
+    { name = "langchain-gigachat", marker = "extra == 'all'", specifier = ">=0.3.12" },
+    { name = "langchain-gigachat", marker = "extra == 'gigachat'", specifier = ">=0.3.12" },
+    { name = "langchain-google-genai", marker = "extra == 'all'", specifier = ">=2.1.10" },
+    { name = "langchain-google-genai", marker = "extra == 'gemini'", specifier = ">=2.1.10" },
+    { name = "langchain-openai", marker = "extra == 'all'", specifier = ">=0.3.32" },
+    { name = "langchain-openai", marker = "extra == 'openai'", specifier = ">=0.3.32" },
+    { name = "langchain-xai", marker = "extra == 'all'", specifier = ">=0.2.5" },
+    { name = "langchain-xai", marker = "extra == 'xai'", specifier = ">=0.2.5" },
+    { name = "tiktoken", marker = "extra == 'all'", specifier = ">=0.11.0" },
+    { name = "tiktoken", marker = "extra == 'openai'", specifier = ">=0.11.0" },
+    { name = "tokenizers", marker = "extra == 'all'", specifier = ">=0.22.0" },
+    { name = "tokenizers", marker = "extra == 'deepseek'", specifier = ">=0.22.0" },
 ]
+provides-extras = ["anthropic", "cerebras", "deepseek", "gemini", "gigachat", "openai", "xai", "all"]
 
 [package.metadata.requires-dev]
-anthropic = [{ name = "langchain-anthropic", specifier = ">=0.3.19" }]
-cerebras = [{ name = "langchain-cerebras", specifier = ">=0.5.0" }]
-deepseek = [
-    { name = "langchain-deepseek", specifier = ">=0.1.4" },
-    { name = "tokenizers", specifier = ">=0.22.0" },
-]
 dev = [
     { name = "build", specifier = ">=1.2.2.post1" },
     { name = "pre-commit", specifier = ">=4.2.0" },
@@ -2038,13 +2046,6 @@ dev = [
     { name = "ruff", specifier = ">=0.12.11" },
     { name = "twine", specifier = ">=6.1.0" },
 ]
-gemini = [{ name = "langchain-google-genai", specifier = ">=2.1.10" }]
-gigachat = [{ name = "langchain-gigachat", specifier = ">=0.3.12" }]
-openai = [
-    { name = "langchain-openai", specifier = ">=0.3.32" },
-    { name = "tiktoken", specifier = ">=0.11.0" },
-]
-xai = [{ name = "langchain-xai", specifier = ">=0.2.5" }]
 
 [[package]]
 name = "urllib3"
