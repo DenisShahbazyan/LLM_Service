@@ -1,8 +1,7 @@
 import json
-from typing import Any, AsyncGenerator, Awaitable, Callable, TypeVar
+from typing import Any, Awaitable, Callable, TypeVar
 
 from langchain.schema import AIMessage, BaseMessage
-from langchain_core.messages import BaseMessageChunk
 from pydantic import BaseModel
 
 from llm.counter import TokenCounter
@@ -54,27 +53,16 @@ class StreamBillingDecorator:
 
     def __init__(
         self,
-        func: Callable[..., AsyncGenerator[Any, None]],
         counter: TokenCounter,
     ) -> None:
-        self.func = func
         self.counter = counter
-        self.full_output_text = ''
 
-    def __get__(self, instance, owner):
-        return lambda *args, **kwargs: self(instance, *args, **kwargs)
+    async def count_input_tokens(self, input_data):
+        """Подсчитывает входные токены"""
+        await self.counter.count_input_tokens_from_text(input_data)
 
-    async def __call__(self, *args, **kwargs) -> AsyncGenerator[BaseMessageChunk, None]:
-        self.full_output_text = ''
-
-        stream = self.func(*args, **kwargs)
-        async for chunk in stream:
-            self.full_output_text += chunk.content
-            yield chunk
-
-        await self.counter.count_input_tokens_from_text(
-            kwargs.get('input'),
-        )
+    async def count_output_tokens(self, full_output_text: str):
+        """Подсчитывает выходные токены"""
         await self.counter.count_output_tokens_from_text(
-            [AIMessage(content=self.full_output_text)],
+            [AIMessage(content=full_output_text)],
         )

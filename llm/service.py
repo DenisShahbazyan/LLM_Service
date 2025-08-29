@@ -13,10 +13,13 @@ from llm.usage import TokenUsage
 
 
 class StreamResult:
-    def __init__(self, generator: AsyncGenerator[str, None], billing_stream=None):
+    def __init__(
+        self,
+        generator: AsyncGenerator[str, None],
+        get_full_text: callable = None,
+    ):
         self._generator = generator
-        self._billing_stream = billing_stream
-        self._completed = False
+        self._get_full_text = get_full_text
 
     def __aiter__(self):
         return self
@@ -26,20 +29,14 @@ class StreamResult:
             chunk = await self._generator.__anext__()
             return chunk
         except StopAsyncIteration:
-            self._completed = True
             raise
 
     @property
     def full_text(self) -> str:
         """Возвращает полный текст. Доступен только после завершения итерации."""
-        if self._billing_stream:
-            return self._billing_stream.full_output_text
+        if self._get_full_text:
+            return self._get_full_text()
         return ''
-
-    @property
-    def is_completed(self) -> bool:
-        """Проверяет, завершился ли стрим"""
-        return self._completed
 
 
 # TODO: Проверить что в структурный ответ принимается не только Pydantic схемы
@@ -171,14 +168,23 @@ class LLMService:
 
         await self._moderation_check(moderation, chat_for_model)
 
-        billing_stream = StreamBillingDecorator(self.client.astream, self.counter)
+        billing = StreamBillingDecorator(self.counter)
+        full_output_text = ''
 
         async def content_generator():
-            stream = billing_stream(input=chat_for_model, **kwargs)
+            nonlocal full_output_text
+
+            stream = self.client.astream(input=chat_for_model, **kwargs)
             async for chunk in stream:
+                full_output_text += chunk.content
                 yield chunk.content
 
-            ai_message = AIMessage(content=billing_stream.full_output_text)
+            # Подсчитываем токены после завершения стрима
+            await billing.count_input_tokens(chat_for_model)
+            await billing.count_output_tokens(full_output_text)
+
+            # Сохраняем историю чата
+            ai_message = AIMessage(content=full_output_text)
             self._save_chat_history(chat_for_model, ai_message)
 
-        return StreamResult(content_generator(), billing_stream)
+        return StreamResult(content_generator(), lambda: full_output_text)
