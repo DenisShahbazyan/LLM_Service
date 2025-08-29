@@ -34,13 +34,17 @@ class BillingDecorator:
             await self.counter.count_output_tokens(
                 result.usage_metadata['output_tokens'],
             )
-        elif is_pydantic_instance(result):
+        elif is_pydantic_instance(result) or isinstance(result, dict):
             await self.counter.count_input_tokens_from_text(
                 kwargs.get('input'),
             )
 
-            result_dict = result.model_dump()
-            output_text = json.dumps(result_dict, ensure_ascii=False)
+            if is_pydantic_instance(result):
+                result_dict = result.model_dump()
+                output_text = json.dumps(result_dict, ensure_ascii=False)
+            else:
+                output_text = json.dumps(result, ensure_ascii=False)
+
             await self.counter.count_output_tokens_from_text(
                 [AIMessage(content=output_text)],
             )

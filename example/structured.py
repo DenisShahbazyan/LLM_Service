@@ -26,7 +26,7 @@ SYSTEM_PROMPT = (
 
 
 async def test() -> None:
-    llm = await LLMService.create(deepseek_chat.to_dict())  # noqa: F405
+    llm = await LLMService.create(openrouter.to_dict())  # noqa: F405
     structured_llm = await llm.with_structured_output(RelatedConceptListOutput)
     result = await structured_llm.ainvoke(message=SYSTEM_PROMPT)
     print(result)

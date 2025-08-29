@@ -1,7 +1,9 @@
+import inspect
 import json
-from typing import Any, AsyncGenerator, Literal, Self
+from typing import Any, AsyncGenerator, Self
 
 from langchain.schema import AIMessage, BaseMessage
+from pydantic import BaseModel
 
 from llm.billing import BillingDecorator, StreamBillingDecorator
 from llm.cbr.cbr import CBRRate
@@ -39,10 +41,9 @@ class StreamResult:
         return ''
 
 
-# TODO: Проверить что в структурный ответ принимается не только Pydantic схемы
-# TODO: Исправить передачу аргументов в оригинальный структурный ответ, передавать
-# только те, которые были явно заданы пользователем.
-# TODO: Сделать чтоб chat_json работал и для структурного ответа
+# TODO: Исправить подсчет токенов для with_structured_output. Сейчас токены считаются
+# просто из выходного текста, а нужно считать по тому, что было вызвано в модели
+# (function или tool или что-то еще)
 class LLMService:
     def __init__(self, config: dict, usd_rate: float = None) -> None:
         self.config = config
@@ -73,7 +74,7 @@ class LLMService:
         instance = cls(config, usd_rate)
         return instance
 
-    async def _moderation_check(
+    async def __moderation_check(
         self,
         moderation: bool,
         chat_for_model: list[BaseMessage],
@@ -83,6 +84,14 @@ class LLMService:
                 self.config.get('model'),
                 chat_for_model,
             )
+
+    def __serialize_structured_result(self, result: BaseModel | dict[str, Any]) -> str:
+        if hasattr(result, 'model_dump'):
+            return result.model_dump_json()
+        elif isinstance(result, dict):
+            return json.dumps(result, ensure_ascii=False)
+        else:
+            return str(result)
 
     def _save_chat_history(
         self, chat_for_model: list[BaseMessage], answer: AIMessage
@@ -126,12 +135,15 @@ class LLMService:
     ) -> str:
         chat_for_model = PrepareChat(chat_history, system_prompt, message)
 
-        await self._moderation_check(moderation, chat_for_model)
+        await self.__moderation_check(moderation, chat_for_model)
 
         billing_invoke = BillingDecorator(self.client.ainvoke, self.counter)
         result = await billing_invoke(input=chat_for_model, **kwargs)
 
         if self.__is_structured_output:
+            content = self.__serialize_structured_result(result)
+            ai_message = AIMessage(content=content)
+            self._save_chat_history(chat_for_model, ai_message)
             return result
 
         self._save_chat_history(chat_for_model, result)
@@ -141,17 +153,42 @@ class LLMService:
         self,
         schema: dict | type,
         *,
-        method: Literal[
-            'function_calling', 'json_mode', 'format_instructions'
-        ] = 'function_calling',
-        include_raw: bool = False,
+        method: str = None,
+        include_raw: bool = None,
+        strict: bool = None,
+        tools: list = None,
         **kwargs: Any,
     ) -> Self:
-        new_instance = await LLMService.create(self.config)
+        # Создаем новый экземпляр
+        new_instance = self.__class__(self.config, self.usd_rate)
 
-        new_instance.client = self.client.with_structured_output(
-            schema, method=method, include_raw=include_raw, **kwargs
-        )
+        # Получаем сигнатуру метода провайдера
+        provider_method = self.client.with_structured_output
+        sig = inspect.signature(provider_method)
+        supported_params = set(sig.parameters.keys())
+
+        # Собираем только явно переданные аргументы, которые поддерживает провайдер
+        provider_kwargs = {'schema': schema}
+
+        # Добавляем только явно заданные опциональные параметры
+        optional_params = {
+            'method': method,
+            'include_raw': include_raw,
+            'strict': strict,
+            'tools': tools,
+        }
+
+        for param_name, param_value in optional_params.items():
+            if param_value is not None and param_name in supported_params:
+                provider_kwargs[param_name] = param_value
+
+        # Добавляем остальные kwargs если они поддерживаются
+        for key, value in kwargs.items():
+            if key in supported_params:
+                provider_kwargs[key] = value
+
+        # Создаем structured output клиент
+        new_instance.client = provider_method(**provider_kwargs)
         new_instance.__is_structured_output = True
 
         return new_instance
@@ -166,7 +203,7 @@ class LLMService:
     ) -> StreamResult:
         chat_for_model = PrepareChat(chat_history, system_prompt, message)
 
-        await self._moderation_check(moderation, chat_for_model)
+        await self.__moderation_check(moderation, chat_for_model)
 
         billing = StreamBillingDecorator(self.counter)
         full_output_text = ''
