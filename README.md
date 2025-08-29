@@ -23,13 +23,23 @@
 ## Установка:
 ```sh
 # Через uv
-uv add universal-llm-service
+uv add "universal-llm-service[all]"
 
 # Через pip
-pip install universal-llm-service
+pip install "universal-llm-service[all]"
 
 # Через poetry
-poetry add universal-llm-service
+poetry add "universal-llm-service[all]"
+
+# Можно установить для конкретного провайдера
+[anthropic]
+[cerebras]
+[deepseek]
+[gigachat]
+[gemini]
+[openai]
+[openrouter]
+[xai]
 ```
 
 ## Использование:

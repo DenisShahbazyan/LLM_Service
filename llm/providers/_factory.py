@@ -52,11 +52,7 @@ class ProviderFactory:
             if provider.has_model(model_name):
                 return provider
 
-        available_providers = [cls.__name__ for cls in self._provider_classes]
-        raise ValueError(
-            f'Model {model_name} not found in any available provider. '
-            f'Available providers: {available_providers}'
-        )
+        raise ValueError(f'Model {model_name} not found in any available provider.')
 
     def get_model_config(self, model_name: str) -> ModelConfig:
         """Получает конфигурацию модели
